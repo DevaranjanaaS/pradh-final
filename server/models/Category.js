@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const CategorySchema = new mongoose.Schema({
-  name: { type: String, required: true }
+  name: { type: String, required: true },
+  image: { type: String } // Add image field
 });
 
 CategorySchema.method('toJSON', function() {

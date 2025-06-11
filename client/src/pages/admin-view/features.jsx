@@ -8,6 +8,7 @@ import {
   Check,
   X
 } from 'lucide-react';
+import ProductImageUpload from "@/components/admin-view/image-upload";
 
 function AdminFeatures() {
   // State for categories and subcategories
@@ -18,6 +19,12 @@ function AdminFeatures() {
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [isAddingSubcategory, setIsAddingSubcategory] = useState(false);
   const [selectedCategoryForSubcategory, setSelectedCategoryForSubcategory] = useState('');
+  const [categoryImageFiles, setCategoryImageFiles] = useState([]);
+  const [categoryImageUrls, setCategoryImageUrls] = useState([]);
+  const [categoryImageLoading, setCategoryImageLoading] = useState(false);
+  const [subcategoryImageFiles, setSubcategoryImageFiles] = useState([]);
+  const [subcategoryImageUrls, setSubcategoryImageUrls] = useState([]);
+  const [subcategoryImageLoading, setSubcategoryImageLoading] = useState(false);
 
   // Fetch data from backend
   useEffect(() => {
@@ -82,27 +89,31 @@ function AdminFeatures() {
 
   // Handle add new category
   const handleAddCategory = async () => {
-    if (!newItemName.trim()) return;
+    if (!newItemName.trim() || !categoryImageUrls.length) return;
     await fetch('/api/common/categories', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newItemName }),
+      body: JSON.stringify({ name: newItemName, image: categoryImageUrls[0] }),
     });
     setNewItemName('');
     setIsAddingCategory(false);
+    setCategoryImageFiles([]);
+    setCategoryImageUrls([]);
     refreshCategoryData();
   };
 
   // Handle add new subcategory
   const handleAddSubcategory = async () => {
-    if (!newItemName.trim() || !selectedCategoryForSubcategory) return;
+    if (!newItemName.trim() || !selectedCategoryForSubcategory || !subcategoryImageUrls.length) return;
     await fetch('/api/common/subcategories', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newItemName, categoryId: selectedCategoryForSubcategory }),
+      body: JSON.stringify({ name: newItemName, categoryId: selectedCategoryForSubcategory, image: subcategoryImageUrls[0] }),
     });
     setNewItemName('');
     setIsAddingSubcategory(false);
+    setSubcategoryImageFiles([]);
+    setSubcategoryImageUrls([]);
     refreshCategoryData();
   };
 
@@ -128,7 +139,7 @@ function AdminFeatures() {
           </div>
 
           {isAddingCategory && (
-            <div className="flex items-center gap-2 mb-4 p-2 bg-gray-50 rounded">
+            <div className="flex flex-col gap-2 mb-4 p-2 bg-gray-50 rounded">
               <input
                 type="text"
                 value={newItemName}
@@ -136,13 +147,23 @@ function AdminFeatures() {
                 placeholder="Enter new category name"
                 className="flex-1 p-2 border rounded"
               />
-              <button 
+              <ProductImageUpload
+                imageFiles={categoryImageFiles}
+                setImageFiles={setCategoryImageFiles}
+                uploadedImageUrls={categoryImageUrls}
+                setUploadedImageUrls={setCategoryImageUrls}
+                setImageLoadingState={setCategoryImageLoading}
+                imageLoadingState={categoryImageLoading}
+                isCustomStyling={true}
+              />
+              <button
                 onClick={handleAddCategory}
                 className="p-2 text-green-500 hover:text-green-700"
+                disabled={categoryImageLoading || !categoryImageUrls.length}
               >
                 <Check size={20} />
               </button>
-              <button 
+              <button
                 onClick={() => setIsAddingCategory(false)}
                 className="p-2 text-red-500 hover:text-red-700"
               >
@@ -234,7 +255,7 @@ function AdminFeatures() {
                     </div>
 
                     {isAddingSubcategory && selectedCategoryForSubcategory === category.id && (
-                      <div className="flex items-center gap-2 p-2">
+                      <div className="flex flex-col gap-2 p-2">
                         <input
                           type="text"
                           value={newItemName}
@@ -242,13 +263,23 @@ function AdminFeatures() {
                           placeholder="Enter new subcategory name"
                           className="flex-1 p-2 border rounded"
                         />
-                        <button 
+                        <ProductImageUpload
+                          imageFiles={subcategoryImageFiles}
+                          setImageFiles={setSubcategoryImageFiles}
+                          uploadedImageUrls={subcategoryImageUrls}
+                          setUploadedImageUrls={setSubcategoryImageUrls}
+                          setImageLoadingState={setSubcategoryImageLoading}
+                          imageLoadingState={subcategoryImageLoading}
+                          isCustomStyling={true}
+                        />
+                        <button
                           onClick={handleAddSubcategory}
                           className="p-2 text-green-500 hover:text-green-700"
+                          disabled={subcategoryImageLoading || !subcategoryImageUrls.length}
                         >
                           <Check size={16} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => setIsAddingSubcategory(false)}
                           className="p-2 text-red-500 hover:text-red-700"
                         >

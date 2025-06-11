@@ -99,8 +99,8 @@ const fetchAllProducts = async (req, res) => {
       success: true,
       data: listOfProducts,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     res.status(500).json({
       success: false,
       message: "Error occured",

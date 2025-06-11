@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const SubcategorySchema = new mongoose.Schema({
   name: { type: String, required: true },
-  categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true }
+  categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  image: { type: String } // Add image field
 });
 
 SubcategorySchema.method('toJSON', function() {

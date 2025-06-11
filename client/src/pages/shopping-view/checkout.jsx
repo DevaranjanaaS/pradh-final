@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { createNewOrder } from "@/store/shop/order-slice";
+import { createNewOrder, captureRazorpayPayment } from "@/store/shop/order-slice";
 import { Navigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -13,7 +13,7 @@ function ShoppingCheckout() {
   const { user } = useSelector((state) => state.auth);
   const { approvalURL } = useSelector((state) => state.shopOrder);
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
-  const [isPaymentStart, setIsPaymemntStart] = useState(false);
+  const [isPaymentStart] = useState(false);
   const dispatch = useDispatch();
   const { toast } = useToast();
 
@@ -32,13 +32,12 @@ function ShoppingCheckout() {
         )
       : 0;
 
-  function handleInitiatePaypalPayment() {
+  function handleInitiateRazorpayPayment() {
     if (cartItems.length === 0) {
       toast({
         title: "Your cart is empty. Please add items to proceed",
         variant: "destructive",
       });
-
       return;
     }
     if (currentSelectedAddress === null) {
@@ -46,10 +45,8 @@ function ShoppingCheckout() {
         title: "Please select one address to proceed.",
         variant: "destructive",
       });
-
       return;
     }
-
     const orderData = {
       userId: user?.id,
       cartId: cartItems?._id,
@@ -72,7 +69,7 @@ function ShoppingCheckout() {
         notes: currentSelectedAddress?.notes,
       },
       orderStatus: "pending",
-      paymentMethod: "paypal",
+      paymentMethod: "razorpay",
       paymentStatus: "pending",
       totalAmount: totalCartAmount,
       orderDate: new Date(),
@@ -80,26 +77,52 @@ function ShoppingCheckout() {
       paymentId: "",
       payerId: "",
     };
-
     dispatch(createNewOrder(orderData)).then((data) => {
-      console.log(data, "sangam");
-      if (data?.payload?.success) {
-        setIsPaymemntStart(true);
-        window.location.href="/shop/payment-success";
-      } else {
-        setIsPaymemntStart(false);
+      if (data?.payload?.success && data?.payload?.razorpayOrder) {
+        const options = {
+          key: "rzp_test_QtnS8TbkLtokIo", // Your Razorpay Test Key
+          amount: data.payload.razorpayOrder.amount,
+          currency: data.payload.razorpayOrder.currency,
+          name: "Pradekshaa Silks",
+          description: "Order Payment",
+          order_id: data.payload.razorpayOrder.id,
+          handler: function (response) {
+            dispatch(
+              captureRazorpayPayment({
+                razorpay_payment_id: response.razorpay_payment_id,
+                orderId: data.payload.orderId,
+              })
+            ).then((result) => {
+              if (result?.payload?.success) {
+                window.location.href = "/shop/payment-success";
+              }
+            });
+          },
+          prefill: {
+            name: user?.name,
+            email: user?.email,
+            contact: currentSelectedAddress?.phone,
+          },
+          theme: {
+            color: "#F37254",
+          },
+          method: {
+            upi: true,
+            card: true,
+            netbanking: true,
+            wallet: true,
+          },
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.open();
       }
     });
   }
 
-  // if (approvalURL) {
-  //   window.location.href = approvalURL;
-  // }
-
   return (
     <div className="flex flex-col">
       <div className="relative h-[300px] w-full overflow-hidden">
-        <img src={img} className="h-full w-full object-cover object-center" />
+        <img src={img} alt="Account" className="h-full w-full object-cover object-center" />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
         <Address
@@ -107,9 +130,9 @@ function ShoppingCheckout() {
           setCurrentSelectedAddress={setCurrentSelectedAddress}
         />
         <div className="flex flex-col gap-4">
-          {cartItems && cartItems.items && cartItems.items.length > 0
-            ? cartItems.items.map((item) => (
-                <UserCartItemsContent cartItem={item} />
+          {cartItems?.items?.length > 0
+            ? cartItems.items.map((item, idx) => (
+                <UserCartItemsContent cartItem={item} key={item.productId || idx} />
               ))
             : null}
           <div className="mt-8 space-y-4">
@@ -119,10 +142,10 @@ function ShoppingCheckout() {
             </div>
           </div>
           <div className="mt-4 w-full">
-            <Button onClick={handleInitiatePaypalPayment} className="w-full">
+            <Button onClick={handleInitiateRazorpayPayment} className="w-full">
               {isPaymentStart
-                ? "Processing Paypal Payment..."
-                : "Checkout with Paypal"}
+                ? "Processing Razorpay Payment..."
+                : "Checkout with Razorpay"}
             </Button>
           </div>
         </div>

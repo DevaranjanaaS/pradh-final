@@ -13,17 +13,17 @@ router.get('/', async (req, res) => {
   });
 });
 
-// Add category
+// Add category with image
 router.post('/', async (req, res) => {
-  const { name } = req.body;
-  const cat = new Category({ name });
+  const { name, image } = req.body;
+  const cat = new Category({ name, image });
   await cat.save();
-  res.json({ id: cat._id, name: cat.name });
+  res.json({ id: cat._id, name: cat.name, image: cat.image });
 });
 
-// Update category
+// Update category with image
 router.put('/:id', async (req, res) => {
-  await Category.findByIdAndUpdate(req.params.id, { name: req.body.name });
+  await Category.findByIdAndUpdate(req.params.id, { name: req.body.name, image: req.body.image });
   res.sendStatus(200);
 });
 
