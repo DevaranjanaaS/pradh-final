@@ -8,6 +8,8 @@ const AddressSchema = new mongoose.Schema(
     pincode: String,
     phone: String,
     notes: String,
+    isGift: { type: Boolean, default: false },
+    giftMessage: { type: String, default: "" },
   },
   { timestamps: true }
 );

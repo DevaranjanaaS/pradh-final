@@ -70,11 +70,11 @@ function UserCartItemsContent({ cartItem }) {
       }
     });
   }
-
+  console.log(cartItem, "cartItem");
   return (
     <div className="flex items-center space-x-4">
       <img
-        src={cartItem?.image}
+        src={Array.isArray(cartItem?.images) ? cartItem.images[0] : cartItem?.images}
         alt={cartItem?.title}
         className="w-20 object-cover rounded"
         style={{ aspectRatio: "3 / 4", height: "auto" }}
@@ -106,7 +106,7 @@ function UserCartItemsContent({ cartItem }) {
       </div>
       <div className="flex flex-col items-end">
         <p className="font-semibold">
-          $
+           ₹
           {(
             (cartItem?.salePrice > 0 ? cartItem?.salePrice : cartItem?.price) *
             cartItem?.quantity

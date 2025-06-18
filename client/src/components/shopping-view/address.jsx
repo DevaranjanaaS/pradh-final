@@ -18,6 +18,8 @@ const initialAddressFormData = {
   phone: "",
   pincode: "",
   notes: "",
+  isGift: false,
+  giftMessage: "",
 };
 
 function Address({ setCurrentSelectedAddress, selectedId }) {
@@ -41,12 +43,18 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
       return;
     }
 
+    // Always coerce isGift to boolean before dispatching
+    const safeFormData = {
+      ...formData,
+      isGift: Boolean(formData.isGift),
+    };
+
     currentEditedId !== null
       ? dispatch(
           editaAddress({
             userId: user?.id,
             addressId: currentEditedId,
-            formData,
+            formData: safeFormData,
           })
         ).then((data) => {
           if (data?.payload?.success) {
@@ -60,7 +68,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
         })
       : dispatch(
           addNewAddress({
-            ...formData,
+            ...safeFormData,
             userId: user?.id,
           })
         ).then((data) => {
@@ -96,11 +104,18 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
       phone: getCuurentAddress?.phone,
       pincode: getCuurentAddress?.pincode,
       notes: getCuurentAddress?.notes,
+      isGift: Boolean(getCuurentAddress?.isGift),
+      giftMessage: getCuurentAddress?.giftMessage || "",
     });
   }
 
   function isFormValid() {
+    // If isGift is truthy, giftMessage must not be empty
+    if (formData.isGift) {
+      if (!formData.giftMessage || formData.giftMessage.trim() === "") return false;
+    }
     return Object.keys(formData)
+      .filter((key) => key !== "giftMessage" && key !== "isGift")
       .map((key) => formData[key].trim() !== "")
       .every((item) => item);
   }

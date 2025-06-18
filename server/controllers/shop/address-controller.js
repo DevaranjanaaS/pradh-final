@@ -2,7 +2,7 @@ const Address = require("../../models/Address");
 
 const addAddress = async (req, res) => {
   try {
-    const { userId, address, city, pincode, phone, notes } = req.body;
+    const { userId, address, city, pincode, phone, notes, isGift, giftMessage } = req.body;
 
     if (!userId || !address || !city || !pincode || !phone || !notes) {
       return res.status(400).json({
@@ -18,6 +18,8 @@ const addAddress = async (req, res) => {
       pincode,
       notes,
       phone,
+      isGift: typeof isGift !== 'undefined' ? isGift : false,
+      giftMessage: isGift ? giftMessage : "",
     });
 
     await newlyCreatedAddress.save();

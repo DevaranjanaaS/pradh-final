@@ -161,6 +161,23 @@ function CommonForm({
           );
 
           break;
+        case "checkbox":
+          element = (
+            <input
+              type="checkbox"
+              id={getControlItem.name}
+              name={getControlItem.name}
+              checked={!!formData[getControlItem.name]}
+              onChange={(event) =>
+                setFormData({
+                  ...formData,
+                  [getControlItem.name]: event.target.checked,
+                })
+              }
+              className="w-4 h-4 accent-primary mr-2"
+            />
+          );
+          break;
         default:
           element = (
             <Input
@@ -187,12 +204,18 @@ function CommonForm({
   return (
     <form onSubmit={onSubmit}>
       <div className="flex flex-col gap-3">
-        {formControls.map((controlItem) => (
-          <div className="grid w-full gap-1.5" key={controlItem.name}>
-            <Label className="mb-1">{controlItem.label}</Label>
-            {renderInputsByComponentType(controlItem)}
-          </div>
-        ))}
+        {formControls.map((controlItem) => {
+          // Only render if showIf is not defined or returns true
+          if (typeof controlItem.showIf === "function" && !controlItem.showIf(formData)) {
+            return null;
+          }
+          return (
+            <div className="grid w-full gap-1.5" key={controlItem.name}>
+              <Label className="mb-1">{controlItem.label}</Label>
+              {renderInputsByComponentType(controlItem)}
+            </div>
+          );
+        })}
       </div>
       <Button disabled={isBtnDisabled} type="submit" className="mt-2 w-full">
         {buttonText || "Submit"}

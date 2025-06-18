@@ -21,6 +21,13 @@ const createOrder = async (req, res) => {
       cartId,
     } = req.body;
 
+    // Ensure isGift and giftMessage are present in addressInfo
+    const safeAddressInfo = {
+      ...addressInfo,
+      isGift: addressInfo?.isGift || false,
+      giftMessage: addressInfo?.giftMessage || "",
+    };
+
     if (paymentMethod === "razorpay") {
       // Razorpay expects amount in paise
       const options = {
@@ -33,7 +40,7 @@ const createOrder = async (req, res) => {
         userId,
         cartId,
         cartItems,
-        addressInfo,
+        addressInfo: safeAddressInfo,
         orderStatus,
         paymentMethod,
         paymentStatus,
@@ -55,7 +62,7 @@ const createOrder = async (req, res) => {
       userId,
       cartId,
       cartItems,
-      addressInfo,
+      addressInfo: safeAddressInfo,
       orderStatus,
       paymentMethod,
       paymentStatus,

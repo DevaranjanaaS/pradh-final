@@ -169,6 +169,20 @@ export const addressFormControls = [
     placeholder: "Enter your phone number",
   },
   {
+    label: "Gift for someone else?",
+    name: "isGift",
+    componentType: "checkbox",
+    defaultValue: false,
+  },
+  {
+    label: "Gift Message",
+    name: "giftMessage",
+    componentType: "textarea",
+    placeholder: "Message to be written on the card before delivery",
+    showIf: (formData) => !!formData.isGift,
+    requiredIf: (formData) => !!formData.isGift,
+  },
+  {
     label: "Notes",
     name: "notes",
     componentType: "textarea",

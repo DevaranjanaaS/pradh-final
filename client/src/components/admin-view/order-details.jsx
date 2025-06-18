@@ -56,7 +56,7 @@ function AdminOrderDetailsView({ orderDetails }) {
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Price</p>
-            <Label>${orderDetails?.totalAmount}</Label>
+            <Label>₹{orderDetails?.totalAmount}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Payment method</p>
@@ -110,6 +110,17 @@ function AdminOrderDetailsView({ orderDetails }) {
               <span>{orderDetails?.addressInfo?.pincode}</span>
               <span>{orderDetails?.addressInfo?.phone}</span>
               <span>{orderDetails?.addressInfo?.notes}</span>
+              <span>
+                {orderDetails?.addressInfo?.isGift ? (
+                  <span className="text-green-700 font-bold">To a friend</span>
+                ) : (
+                  <span>Myself</span>
+                )}
+              </span>
+              {orderDetails?.addressInfo?.isGift &&
+              orderDetails?.addressInfo?.giftMessage ? (
+                <span>Gift Message: {orderDetails.addressInfo.giftMessage}</span>
+              ) : null}
             </div>
           </div>
         </div>

@@ -27,6 +27,16 @@ function AddressCard({
         <Label>City: {addressInfo?.city}</Label>
         <Label>pincode: {addressInfo?.pincode}</Label>
         <Label>Phone: {addressInfo?.phone}</Label>
+        <Label>
+          {addressInfo?.isGift ? (
+            <span className="text-green-700 font-bold">To a friend</span>
+          ) : (
+            <span>Myself</span>
+          )}
+        </Label>
+        {addressInfo?.isGift && addressInfo?.giftMessage ? (
+          <Label>Gift Message: {addressInfo.giftMessage}</Label>
+        ) : null}
         <Label>Notes: {addressInfo?.notes}</Label>
       </CardContent>
       <CardFooter className="p-3 flex justify-between">
