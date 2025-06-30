@@ -224,12 +224,12 @@ function AboutUs() {
                 <span>
                   <b>WhatsApp:</b>{" "}
                   <a
-                    href="https://wa.me/9994819203"
+                    href="https://wa.me/+919994819203"
                     className="text-green-600 hover:underline"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    9994819203
+                    +919994819203
                   </a>
                 </span>
               </div>

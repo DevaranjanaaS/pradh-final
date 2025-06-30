@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build: ./server
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGO_URI=mongodb://71762231013:Ranjanaa@mongo:27017/test?authSource=admin
+      - CLIENT_ORIGIN=http://localhost:3000
+      # Add other secrets as needed
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ./server:/server
+    command: ["node", "server.js"]
+
+  client:
+    build: ./client
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    volumes:
+      - ./client:/client
+
+volumes:
+  mongo-data:

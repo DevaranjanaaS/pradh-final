@@ -53,6 +53,22 @@ export const captureRazorpayPayment = createAsyncThunk(
   }
 );
 
+export const verifyRazorpayPayment = createAsyncThunk(
+  "/order/verifyRazorpayPayment",
+  async ({ razorpay_payment_id, razorpay_order_id, razorpay_signature, orderId }) => {
+    const response = await axios.post(
+      "http://localhost:5000/api/shop/order/verify-razorpay",
+      {
+        razorpay_payment_id,
+        razorpay_order_id,
+        razorpay_signature,
+        orderId,
+      }
+    );
+    return response.data;
+  }
+);
+
 export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
@@ -118,6 +134,17 @@ const shoppingOrderSlice = createSlice({
       .addCase(getOrderDetails.rejected, (state) => {
         state.isLoading = false;
         state.orderDetails = null;
+      })
+      .addCase(verifyRazorpayPayment.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(verifyRazorpayPayment.fulfilled, (state) => {
+        state.isLoading = false;
+        // Optionally, set a flag or message for payment verification success
+      })
+      .addCase(verifyRazorpayPayment.rejected, (state) => {
+        state.isLoading = false;
+        // Optionally, set a flag or message for payment verification failure
       });
   },
 });

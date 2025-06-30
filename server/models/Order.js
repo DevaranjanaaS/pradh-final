@@ -24,10 +24,11 @@ const OrderSchema = new mongoose.Schema({
   },
   orderStatus: String,
   paymentMethod: String,
-  paymentStatus: String,
+  paymentStatus: { type: String, default: "pending" },
   totalAmount: Number,
   orderDate: Date,
   orderUpdateDate: Date,
+  razorpayOrderId: String, // Store Razorpay order ID for webhook matching
   paymentId: String,
   payerId: String,
 });
