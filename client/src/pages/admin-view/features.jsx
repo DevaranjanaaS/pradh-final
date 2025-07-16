@@ -9,6 +9,7 @@ import {
   X
 } from 'lucide-react';
 import ProductImageUpload from "@/components/admin-view/image-upload";
+import { API_BASE_URL } from "@/config";
 
 function AdminFeatures() {
   // State for categories and subcategories
@@ -28,7 +29,7 @@ function AdminFeatures() {
 
   // Fetch data from backend
   useEffect(() => {
-    fetch('/api/common/categories')
+    fetch(`${API_BASE_URL}/common/categories`)
       .then(res => res.json())
       .then(data => setCategoryData(data))
       .catch(() => setCategoryData({ categories: [], subcategories: [] }));
@@ -36,7 +37,7 @@ function AdminFeatures() {
 
   // Helper to refresh data after any change
   const refreshCategoryData = () => {
-    fetch('/api/common/categories')
+    fetch(`${API_BASE_URL}/common/categories`)
       .then(res => res.json())
       .then(data => setCategoryData(data));
   };
@@ -60,13 +61,13 @@ function AdminFeatures() {
     if (!newItemName.trim()) return;
 
     if (editingItem.type === 'category') {
-      await fetch(`/api/common/categories/${editingItem.id}`, {
+      await fetch(`${API_BASE_URL}/common/categories/${editingItem.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newItemName }),
       });
     } else {
-      await fetch(`/api/common/subcategories/${editingItem.id}`, {
+      await fetch(`${API_BASE_URL}/common/subcategories/${editingItem.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newItemName }),
@@ -80,9 +81,9 @@ function AdminFeatures() {
   // Handle delete
   const handleDelete = async (id, type) => {
     if (type === 'category') {
-      await fetch(`/api/common/categories/${id}`, { method: 'DELETE' });
+      await fetch(`${API_BASE_URL}/common/categories/${id}`, { method: 'DELETE' });
     } else {
-      await fetch(`/api/common/subcategories/${id}`, { method: 'DELETE' });
+      await fetch(`${API_BASE_URL}/common/subcategories/${id}`, { method: 'DELETE' });
     }
     refreshCategoryData();
   };
@@ -90,7 +91,7 @@ function AdminFeatures() {
   // Handle add new category
   const handleAddCategory = async () => {
     if (!newItemName.trim() || !categoryImageUrls.length) return;
-    await fetch('/api/common/categories', {
+    await fetch(`${API_BASE_URL}/common/categories`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: newItemName, image: categoryImageUrls[0] }),
@@ -105,7 +106,7 @@ function AdminFeatures() {
   // Handle add new subcategory
   const handleAddSubcategory = async () => {
     if (!newItemName.trim() || !selectedCategoryForSubcategory || !subcategoryImageUrls.length) return;
-    await fetch('/api/common/subcategories', {
+    await fetch(`${API_BASE_URL}/common/subcategories`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: newItemName, categoryId: selectedCategoryForSubcategory, image: subcategoryImageUrls[0] }),

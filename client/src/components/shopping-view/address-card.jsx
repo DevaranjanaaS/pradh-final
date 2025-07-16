@@ -37,7 +37,9 @@ function AddressCard({
         {addressInfo?.isGift && addressInfo?.giftMessage ? (
           <Label>Gift Message: {addressInfo.giftMessage}</Label>
         ) : null}
-        <Label>Notes: {addressInfo?.notes}</Label>
+        {addressInfo?.notes && addressInfo.notes.trim() !== "" ? (
+          <Label>Notes: {addressInfo.notes}</Label>
+        ) : null}
       </CardContent>
       <CardFooter className="p-3 flex justify-between">
         <Button onClick={() => handleEditAddress(addressInfo)}>Edit</Button>

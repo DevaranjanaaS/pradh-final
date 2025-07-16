@@ -58,8 +58,8 @@ function AdminOrdersView() {
           </TableHeader>
           <TableBody>
             {orderList && orderList.length > 0
-              ? orderList.map((orderItem) => {
-                  let badgeClass = "bg-black";
+              ? orderList.slice().reverse().map((orderItem) => {
+                  let badgeClass = "bg-yellow-500";
                   if (orderItem?.orderStatus === "confirmed")
                     badgeClass = "bg-green-500";
                   else if (orderItem?.orderStatus === "rejected")

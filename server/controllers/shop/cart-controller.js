@@ -43,7 +43,7 @@ const addToCart = async (req, res) => {
       data: cart,
     });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.status(500).json({
       success: false,
       message: "Error",
@@ -101,7 +101,7 @@ const fetchCartItems = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.status(500).json({
       success: false,
       message: "Error",
@@ -165,7 +165,7 @@ const updateCartItemQty = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.status(500).json({
       success: false,
       message: "Error",
@@ -224,7 +224,7 @@ const deleteCartItem = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.status(500).json({
       success: false,
       message: "Error",

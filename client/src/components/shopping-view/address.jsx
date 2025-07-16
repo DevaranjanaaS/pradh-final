@@ -43,9 +43,12 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
       return;
     }
 
-    // Always coerce isGift to boolean before dispatching
+    // Always coerce isGift to boolean and phone/pincode to string, and ensure notes is always present
     const safeFormData = {
       ...formData,
+      phone: String(formData.phone || "").replace(/\D/g, "").slice(0, 10),
+      pincode: String(formData.pincode || "").replace(/\D/g, "").slice(0, 6),
+      notes: formData.notes || "",
       isGift: Boolean(formData.isGift),
     };
 
@@ -114,8 +117,9 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     if (formData.isGift) {
       if (!formData.giftMessage || formData.giftMessage.trim() === "") return false;
     }
+    // Make 'notes' optional by excluding it from required check
     return Object.keys(formData)
-      .filter((key) => key !== "giftMessage" && key !== "isGift")
+      .filter((key) => key !== "giftMessage" && key !== "isGift" && key !== "notes")
       .map((key) => formData[key].trim() !== "")
       .every((item) => item);
   }
@@ -124,7 +128,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     dispatch(fetchAllAddresses(user?.id));
   }, [dispatch]);
 
-  console.log(addressList, "addressList");
+  //console.log(addressList, "addressList");
 
   return (
     <Card>

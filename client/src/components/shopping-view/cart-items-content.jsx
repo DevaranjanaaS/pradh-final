@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCartItem, updateCartQuantity } from "@/store/shop/cart-slice";
 import { useToast } from "../ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 function UserCartItemsContent({ cartItem }) {
   const { user } = useSelector((state) => state.auth);
@@ -10,8 +11,19 @@ function UserCartItemsContent({ cartItem }) {
   const { productList } = useSelector((state) => state.shopProducts);
   const dispatch = useDispatch();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   function handleUpdateQuantity(getCartItem, typeOfAction) {
+    if (!user) {
+      toast({
+        title: "Please login to manage your cart",
+        description: "You need to be logged in to update cart items",
+        variant: "destructive",
+      });
+      navigate("/auth/login");
+      return;
+    }
+
     if (typeOfAction == "plus") {
       let getCartItems = cartItems.items || [];
 
@@ -60,6 +72,16 @@ function UserCartItemsContent({ cartItem }) {
   }
 
   function handleCartItemDelete(getCartItem) {
+    if (!user) {
+      toast({
+        title: "Please login to manage your cart",
+        description: "You need to be logged in to remove cart items",
+        variant: "destructive",
+      });
+      navigate("/auth/login");
+      return;
+    }
+
     dispatch(
       deleteCartItem({ userId: user?.id, productId: getCartItem?.productId })
     ).then((data) => {

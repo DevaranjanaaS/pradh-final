@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const FeatureSchema = new mongoose.Schema(
   {
-    image: String,
+    imageDesktop: String, // Desktop/Laptop banner image
+    imageMobile: String,  // Mobile banner image
   },
   { timestamps: true }
 );

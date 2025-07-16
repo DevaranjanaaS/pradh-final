@@ -1,3 +1,8 @@
+import { Search } from "lucide-react";
+
+// API Configuration
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://172.17.104.155:5000';
+
 export const registerFormControls = [
   {
     name: "userName",
@@ -116,9 +121,8 @@ export const shoppingViewHeaderMenuItems = [
   },
   {
     id: "search",
-    label: "Search",
-
-    
+    label: "",
+    icon: Search,
     path: "/shop/search",
   },
 ];
@@ -160,13 +164,23 @@ export const addressFormControls = [
     componentType: "input",
     type: "text",
     placeholder: "Enter your pincode",
+    pattern: "^\\d{6}$",
+    maxLength: 6,
+    minLength: 6,
+    validate: (val) => /^\d{6}$/.test(val),
+    errorMessage: "Pincode must be exactly 6 digits.",
   },
   {
     label: "Phone",
     name: "phone",
     componentType: "input",
-    type: "text",
+    type: "tel",
     placeholder: "Enter your phone number",
+    pattern: "^\\d{10}$",
+    maxLength: 10,
+    minLength: 10,
+    validate: (val) => /^\d{10}$/.test(val),
+    errorMessage: "Phone number must be exactly 10 digits.",
   },
   {
     label: "Gift for someone else?",
@@ -187,5 +201,6 @@ export const addressFormControls = [
     name: "notes",
     componentType: "textarea",
     placeholder: "Enter any additional notes",
+    required: false,
   },
 ];

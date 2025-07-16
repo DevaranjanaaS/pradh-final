@@ -2,18 +2,19 @@ import { Fragment, useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
 import { Separator } from "../ui/separator";
+import { API_BASE_URL } from "../../config";
 
 function ProductFilter({ filters, handleFilter }) {
   const [categoryData, setCategoryData] = useState({ categories: [], subcategories: [] });
 
   useEffect(() => {
-    fetch('/api/common/categories')
+    fetch(`${API_BASE_URL}/common/categories`)
       .then(res => res.json())
       .then(data => {
         setCategoryData(data);
         // Log all subcategory names
         if (Array.isArray(data.subcategories)) {
-          console.log("Subcategory names:", data.subcategories.map(sub => sub.name));
+          //console.log("Subcategory names:", data.subcategories.map(sub => sub.name));
         }
       })
       .catch(() => setCategoryData({ categories: [], subcategories: [] }));

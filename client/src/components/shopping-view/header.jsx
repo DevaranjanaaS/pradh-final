@@ -12,7 +12,7 @@ import { shoppingViewHeaderMenuItems } from "@/config";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuItem,menuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -23,9 +23,11 @@ import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState, useRef } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
-function ProductDropdown() {
+import logo from "@/assets/logo.png";
+
+function ProductDropdown({ setOpen }) {
   const [categories, setCategories] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [open, setOpenState] = useState(false);
   const timeoutRef = useRef(null);
   const navigate = useNavigate();
 
@@ -45,16 +47,17 @@ function ProductDropdown() {
   // Handle mouse enter/leave with delay
   const handleMouseEnter = () => {
     clearTimeout(timeoutRef.current);
-    setOpen(true);
+    setOpenState(true);
   };
   const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => setOpen(false), 250);
+    timeoutRef.current = setTimeout(() => setOpenState(false), 250);
   };
 
-  // Handle click: navigate and close dropdown
+  // Handle click: navigate and close dropdown (and Sheet if setOpen)
   const handleCategoryClick = (category) => {
-    setOpen(false);
-    navigate(`/shop/listing?category=${category._id}`);
+    setOpen && setOpen(false);
+    setOpenState(false);
+    navigate(`/shop/listing?category=${category.name}`);
   };
 
   return (
@@ -81,20 +84,22 @@ function ProductDropdown() {
   );
 }
 
-function MenuItems() {
+function MenuItems({ setOpen }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   function handleNavigate(getCurrentMenuItem) {
     sessionStorage.removeItem("filters");
+    // Use trimmed label for filter and URL (no plus replacement)
+    const labelName = getCurrentMenuItem.label?.trim();
     const currentFilter =
       getCurrentMenuItem.id !== "home" &&
       getCurrentMenuItem.id !== "about" &&
       getCurrentMenuItem.id !== "search" &&
       getCurrentMenuItem.id !== "products"
         ? {
-            category: [getCurrentMenuItem.id],
+            category: [labelName],
           }
         : null;
 
@@ -102,21 +107,39 @@ function MenuItems() {
 
     if (getCurrentMenuItem.id === "about") {
       navigate("/shop/about-us");
+      if (setOpen) setOpen(false);
       return;
     }
 
-    location.pathname.includes("listing") && currentFilter !== null
-      ? setSearchParams(
-          new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
-        )
-      : navigate(getCurrentMenuItem.path);
+    if (location.pathname.includes("listing") && currentFilter !== null) {
+      setSearchParams(
+        new URLSearchParams(`?category=${labelName}`)
+      );
+    } else {
+      navigate(getCurrentMenuItem.path);
+    }
+    if (setOpen) setOpen(false);
   }
 
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
       {shoppingViewHeaderMenuItems.map((menuItem) => {
         if (menuItem.id === "products") {
-          return <ProductDropdown key={menuItem.id} />;
+          return <ProductDropdown key={menuItem.id} setOpen={setOpen} />;
+        }
+        if (menuItem.icon) {
+          const Icon = menuItem.icon;
+          return (
+            <button
+              key={menuItem.id}
+              onClick={() => handleNavigate(menuItem)}
+              className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+              aria-label="Search"
+              type="button"
+            >
+              <Icon className="w-5 h-5" />
+            </button>
+          );
         }
         return (
           <Label
@@ -140,8 +163,8 @@ function MenuItems() {
   );
 }
 
-function HeaderRightContent() {
-  const { user } = useSelector((state) => state.auth);
+function HeaderRightContent({ setOpen }) {
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const navigate = useNavigate();
@@ -151,74 +174,123 @@ function HeaderRightContent() {
     dispatch(logoutUser());
   }
 
-  useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
-  }, [dispatch]);
+  function handleCartClick() {
+    if (!isAuthenticated) {
+      navigate("/auth/login");
+      return;
+    }
+    setOpenCartSheet(true);
+  }
 
-  console.log(cartItems, "sangam");
+  useEffect(() => {
+    if (isAuthenticated && user?.id) {
+      dispatch(fetchCartItems(user?.id));
+    }
+  }, [dispatch, isAuthenticated, user?.id]);
+
+  //console.log(cartItems, "sangam");
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
-        <Button
-          onClick={() => setOpenCartSheet(true)}
-          variant="outline"
-          size="icon"
-          className="relative"
-        >
-          <ShoppingCart className="w-6 h-6" />
-          <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
-            {cartItems?.items?.length || 0}
-          </span>
-          <span className="sr-only">User cart</span>
-        </Button>
-        <UserCartWrapper
-          setOpenCartSheet={setOpenCartSheet}
-          cartItems={
-            cartItems && cartItems.items && cartItems.items.length > 0
-              ? cartItems.items
-              : []
-          }
-        />
-      </Sheet>
+      {isAuthenticated ? (
+        <>
+          <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+            <Button
+              onClick={handleCartClick}
+              variant="outline"
+              size="icon"
+              className="relative"
+            >
+              <ShoppingCart className="w-6 h-6" />
+              <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
+                {cartItems?.items?.length || 0}
+              </span>
+              <span className="sr-only">User cart</span>
+            </Button>
+            <UserCartWrapper
+              setOpenCartSheet={setOpenCartSheet}
+              cartItems={
+                cartItems && cartItems.items && cartItems.items.length > 0
+                  ? cartItems.items
+                  : []
+              }
+              onCheckout={() => {
+                if (setOpen) setOpen(false); // Only close navbar on checkout
+              }}
+            />
+          </Sheet>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Avatar className="bg-black">
-            <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.userName[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
-            <UserCog className="mr-2 h-4 w-4" />
-            Account
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="bg-black">
+                <AvatarFallback className="bg-black text-white font-extrabold">
+                  {user?.userName[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="right" className="w-56">
+              <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => { navigate("/shop/account"); if (setOpen) setOpen(false); }}>
+                <UserCog className="mr-2 h-4 w-4" />
+                Account
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => { handleLogout(); if (setOpen) setOpen(false); }}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
+      ) : (
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              navigate("/auth/login");
+              if (setOpen) setOpen(false);
+            }}
+          >
+            Login
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => {
+              navigate("/auth/register");
+              if (setOpen) setOpen(false);
+            }}
+          >
+            Register
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
 
 function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const [openSheet, setOpenSheet] = useState(false);
+  const location = useLocation();
+  // Remove previous isProductDetails and isMobile logic for now
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background">
+    <header className="fixed top-0 left-0 w-full z-50 bg-background shadow border-b">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
-        <Link to="/shop/home" className="flex items-center gap-2">
-          <HousePlug className="h-6 w-6" />
-          <span className="font-bold">Pradhikshaa Silks</span>
+        <Link
+          to="/shop/home"
+          className="flex items-center gap-2"
+          onClick={e => {
+            // Always scroll to top on Home click
+            window.dispatchEvent(new CustomEvent("shopping-home-scroll", { detail: "home-scroll-up" }));
+          }}
+        >
+          <img src={logo} alt="Logo" className="h-20 w-20 object-contain" />
+          {/*<span className="font-bold">Pradhikshaa Silks</span>*/}
         </Link>
-        <Sheet>
+        <Sheet open={openSheet} onOpenChange={setOpenSheet}>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
               <Menu className="h-6 w-6" />
@@ -226,14 +298,13 @@ function ShoppingHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs">
-            <MenuItems />
-            <HeaderRightContent />
+            <MenuItems setOpen={setOpenSheet} />
+            <HeaderRightContent setOpen={setOpenSheet} />
           </SheetContent>
         </Sheet>
         <div className="hidden lg:block">
           <MenuItems />
         </div>
-
         <div className="hidden lg:block">
           <HeaderRightContent />
         </div>
@@ -243,3 +314,15 @@ function ShoppingHeader() {
 }
 
 export default ShoppingHeader;
+
+// Update prop types
+import PropTypes from "prop-types";
+MenuItems.propTypes = {
+  setOpen: PropTypes.func,
+};
+HeaderRightContent.propTypes = {
+  setOpen: PropTypes.func,
+};
+ProductDropdown.propTypes = {
+  setOpen: PropTypes.func,
+};

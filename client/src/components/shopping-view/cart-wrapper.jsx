@@ -3,9 +3,13 @@ import { Button } from "../ui/button";
 import { SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 import UserCartItemsContent from "./cart-items-content";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
+import { useToast } from "@/components/ui/use-toast";
 
 function UserCartWrapper({ cartItems, setOpenCartSheet }) {
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const { toast } = useToast();
 
   const totalCartAmount =
     cartItems && cartItems.length > 0
@@ -19,6 +23,21 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
           0
         )
       : 0;
+
+  const handleCheckout = () => {
+    if (!user) {
+      toast({
+        title: "Please login to checkout",
+        description: "You need to be logged in to complete your purchase",
+        variant: "destructive",
+      });
+      navigate("/auth/login");
+      setOpenCartSheet(false);
+      return;
+    }
+    navigate("/shop/checkout");
+    setOpenCartSheet(false);
+  };
 
   return (
     <SheetContent className="sm:max-w-md">
@@ -39,10 +58,7 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
         </div>
       </div>
       <Button
-        onClick={() => {
-          navigate("/shop/checkout");
-          setOpenCartSheet(false);
-        }}
+        onClick={handleCheckout}
         className="w-full mt-6"
       >
         Checkout

@@ -1,48 +1,54 @@
 version: '3.8'
 services:
-  mongo:
-    image: mongo:6
-    restart: always
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # mongo:
+  #   image: mongo:6
+  #   restart: always
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongo-data:/data/db
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: 71762231013
+  #     MONGO_INITDB_ROOT_PASSWORD: Ranjanaa
+   
 
   server:
     build: ./server
     restart: always
-    ports:
-      - "5000:5000"
+    expose:
+      - "5000"
     environment:
       - NODE_ENV=production
       - PORT=5000
-      - MONGO_URI=mongodb://71762231013:Ranjanaa@mongo:27017/test?authSource=admin
-      - CLIENT_ORIGIN=http://localhost:3000
+      - MONGO_URI=mongodb+srv://71762231013:Ranjanaa@cluster0.vbvom.mongodb.net/
+      - CLIENT_ORIGIN=https://172.17.104.155
+      - RAZORPAY_KEY_ID=rzp_test_QtnS8TbkLtokIo
+      - RAZORPAY_KEY_SECRET=lVenYqGGSu1Uf2nNEVLdiYyM
+      - JWT_SECRET=your-super-secure-jwt-secret-key-here-minimum-32-chars
+      - SESSION_SECRET=your-session-secret-key-here-minimum-32-chars
+      - APP_VERSION=1.0.0
       # Add other secrets as needed
-    depends_on:
-      mongo:
-        condition: service_healthy
-    volumes:
-      - ./server:/server
+    
+      
+    #volumes:3443
+    #mongodb://71762231013:Ranjanaa@mongo:27017/test?authSource=admin
+    #  - ./server:/server
+    #    docker exec -it <mongo_container_name> mongosh -u 71762231013 -p Ranjanaa --authenticationDatabase admin    docker exec -it <mongo_container_name> mongosh -u 71762231013 -p Ranjanaa --authenticationDatabase admin    docker exec -it <mongo_container_name> mongosh -u 71762231013 -p Ranjanaa --authenticationDatabase admin  - /server/node_modules
     command: ["node", "server.js"]
 
   client:
-    build: ./client
+    build: 
+      context: ./client
+      args:
+        VITE_API_BASE_URL: /api
     restart: always
     ports:
-      - "3000:3000"
+      - "80:80"
+      - "443:443"
     depends_on:
       - server
-    volumes:
-      - ./client:/client
+    #volumes:
+    #  - ./client:/client
 
-volumes:
-  mongo-data:
+# volumes:
+#   mongo-data:

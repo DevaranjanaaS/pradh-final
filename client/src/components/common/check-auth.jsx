@@ -5,9 +5,10 @@ function CheckAuth({ isAuthenticated, user, children }) {
 
   console.log(location.pathname, isAuthenticated);
 
+  // Allow unauthenticated users to access home page and shopping pages
   if (location.pathname === "/") {
     if (!isAuthenticated) {
-      return <Navigate to="/auth/login" />;
+      return <Navigate to="/shop/home" />;
     } else {
       if (user?.role === "admin") {
         return <Navigate to="/admin/dashboard" />;
@@ -17,12 +18,17 @@ function CheckAuth({ isAuthenticated, user, children }) {
     }
   }
 
+  // Allow unauthenticated users to access shopping pages (except checkout)
+  if (location.pathname.includes("/shop/") && !location.pathname.includes("/checkout")) {
+    return <>{children}</>;
+  }
+
+  // Require authentication for checkout and admin pages
   if (
     !isAuthenticated &&
-    !(
-      location.pathname.includes("/login") ||
-      location.pathname.includes("/register")
-    )
+    (location.pathname.includes("/checkout") ||
+     location.pathname.includes("/admin") ||
+     location.pathname.includes("/account"))
   ) {
     return <Navigate to="/auth/login" />;
   }

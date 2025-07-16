@@ -6,10 +6,15 @@ WORKDIR /server
 
 # Install dependencies
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install
 
 # Copy source code
 COPY . .
+
+# Create SSL directory and copy certificates
+RUN mkdir -p /etc/ssl/certs /etc/ssl/private
+COPY cert.pem /etc/ssl/certs/
+COPY key.pem /etc/ssl/private/
 
 # Expose port
 EXPOSE 5000
