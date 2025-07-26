@@ -3,8 +3,8 @@
 ## ✅ **Current Status: HTTPS Ready**
 
 Your application is now running with HTTPS:
-- **Frontend:** `https://172.17.104.155:3443`
-- **API:** `https://172.17.104.155:5000`
+- **Frontend:** `https://127.0.0.1:3443`
+- **API:** `https://127.0.0.1:5000`
 - **SSL:** Self-signed certificates (working for testing)
 
 ## 🔧 **SSL Directory Status**
@@ -19,7 +19,7 @@ The `ssl/` directory contains:
 ### **1. Domain & DNS Setup**
 ```bash
 # Register a domain (e.g., pradekshaa-silks.com)
-# Point DNS A record to your server IP: 172.17.104.155
+# Point DNS A record to your server IP: 127.0.0.1
 ```
 
 ### **2. Real SSL Certificates**

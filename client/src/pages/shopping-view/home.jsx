@@ -31,6 +31,7 @@ import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { getFeatureImages } from "@/store/common-slice";
 import { useNavigate } from "react-router-dom";
 import UserCartWrapper from "@/components/shopping-view/cart-wrapper";
+import ReviewCarousel from "@/components/common/ReviewCarousel";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -388,6 +389,8 @@ function ShoppingHome() {
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
       />
+      {/* --- Customer Reviews Section --- */}
+      <ReviewCarousel />
     </div>
   );
 }

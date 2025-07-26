@@ -89,16 +89,8 @@ function ShoppingCheckout() {
           description: "Order Payment",
           order_id: data.payload.razorpayOrder.id,
           handler: function (response) {
-            dispatch(
-              captureRazorpayPayment({
-                razorpay_payment_id: response.razorpay_payment_id,
-                orderId: data.payload.orderId,
-              })
-            ).then((result) => {
-              if (result?.payload?.success) {
-                window.location.href = "/shop/payment-success";
-              }
-            });
+            // After payment, redirect to success page. Order/cart will be updated by webhook.
+            window.location.href = "/shop/payment-success";
           },
           prefill: {
             name: user?.name,

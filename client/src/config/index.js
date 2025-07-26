@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 
 // API Configuration
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://172.17.104.155:5000';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://127.0.0.1:5000';
 
 export const registerFormControls = [
   {

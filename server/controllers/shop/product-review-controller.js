@@ -1,84 +1,46 @@
-// const Order = require("../../models/Order");
-// const Product = require("../../models/Product");
-// const ProductReview = require("../../models/Review");
+const ProductReview = require("../../models/Review");
 
-// const addProductReview = async (req, res) => {
-//   try {
-//     const { productId, userId, userName, reviewMessage, reviewValue } = req.body;
-//     console.log("Review request:", req.body); // Add this line for debugging
+const addProductReview = async (req, res) => {
+  try {
+    const { userId, userName, reviewMessage, reviewValue } = req.body;
+    if (!userId || !reviewMessage || !reviewValue) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields.",
+      });
+    }
+    const newReview = new ProductReview({
+      userId,
+      userName,
+      reviewMessage,
+      reviewValue,
+    });
+    await newReview.save();
+    res.status(201).json({
+      success: true,
+      data: newReview,
+    });
+  } catch (e) {
+    res.status(500).json({
+      success: false,
+      message: e.message || "Error",
+    });
+  }
+};
 
-//     const order = await Order.findOne({
-//       userId,
-//       "cartItems.productId": productId,
-//       orderStatus: { $in: ["confirmed", "delivered"] },
-//     });
+const getAllReviews = async (req, res) => {
+  try {
+    const reviews = await ProductReview.find({}).sort({ reviewValue: -1, createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      data: reviews,
+    });
+  } catch (e) {
+    res.status(500).json({
+      success: false,
+      message: "Error",
+    });
+  }
+};
 
-//     if (!order) {
-//       return res.status(403).json({
-//         success: false,
-//         message: "You need to purchase product to review it.",
-//       });
-//     }
-
-//     const checkExistinfReview = await ProductReview.findOne({
-//       productId,
-//       userId,
-//     });
-
-//     if (checkExistinfReview) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "You already reviewed this product!",
-//       });
-//     }
-
-//     const newReview = new ProductReview({
-//       productId,
-//       userId,
-//       userName,
-//       reviewMessage,
-//       reviewValue,
-//     });
-
-//     await newReview.save();
-
-//     const reviews = await ProductReview.find({ productId });
-//     const totalReviewsLength = reviews.length;
-//     const averageReview =
-//       reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
-//       totalReviewsLength;
-
-//     await Product.findByIdAndUpdate(productId, { averageReview });
-
-//     res.status(201).json({
-//       success: true,
-//       data: newReview,
-//     });
-//   } catch (e) {
-//     console.log(e);
-//     res.status(500).json({
-//       success: false,
-//       message: e.message || "Error",
-//     });
-//   }
-// };
-
-// const getProductReviews = async (req, res) => {
-//   try {
-//     const { productId } = req.params;
-
-//     const reviews = await ProductReview.find({ productId });
-//     res.status(200).json({
-//       success: true,
-//       data: reviews,
-//     });
-//   } catch (e) {
-//     console.log(e);
-//     res.status(500).json({
-//       success: false,
-//       message: "Error",
-//     });
-//   }
-// };
-
-// module.exports = { addProductReview, getProductReviews };
+module.exports = { addProductReview, getAllReviews };

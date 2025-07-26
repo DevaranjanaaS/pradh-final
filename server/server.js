@@ -13,6 +13,7 @@ const shopCartRouter = require("./routes/shop/cart-routes");
 const shopAddressRouter = require("./routes/shop/address-routes");
 const shopOrderRouter = require("./routes/shop/order-routes");
 const shopSearchRouter = require("./routes/shop/search-routes");
+const shopReviewRouter = require("./routes/shop/review-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 const categoriesRouter = require("./routes/common/categories");
@@ -95,9 +96,9 @@ app.use(hpp());
 app.use(
   cors({
     origin: [
-      process.env.CLIENT_ORIGIN || "https://172.17.104.155:3443",
-      "https://172.17.104.155:3000",
-      "http://172.17.104.155:3000"
+      process.env.CLIENT_ORIGIN || "https://127.0.0.1:3443",
+      "https://127.0.0.1:3000",
+      "http://127.0.0.1:3000"
     ],
     methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
     allowedHeaders: [
@@ -131,6 +132,7 @@ app.use("/api/shop/cart", apiLimiter, shopCartRouter);
 app.use("/api/shop/address", apiLimiter, shopAddressRouter);
 app.use("/api/shop/order", apiLimiter, shopOrderRouter);
 app.use("/api/shop/search", apiLimiter, shopSearchRouter);
+app.use("/api/shop/review", apiLimiter, shopReviewRouter);
 
 // Common routes with standard rate limiting
 app.use("/api/common/feature", apiLimiter, commonFeatureRouter);

@@ -21,7 +21,7 @@ services:
       - NODE_ENV=production
       - PORT=5000
       - MONGO_URI=mongodb+srv://71762231013:Ranjanaa@cluster0.vbvom.mongodb.net/
-      - CLIENT_ORIGIN=https://172.17.104.155
+      - CLIENT_ORIGIN=https://10.90.174.201
       - RAZORPAY_KEY_ID=rzp_test_QtnS8TbkLtokIo
       - RAZORPAY_KEY_SECRET=lVenYqGGSu1Uf2nNEVLdiYyM
       - JWT_SECRET=your-super-secure-jwt-secret-key-here-minimum-32-chars
