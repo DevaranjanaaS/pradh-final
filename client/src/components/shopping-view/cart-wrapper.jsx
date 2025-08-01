@@ -5,6 +5,7 @@ import UserCartItemsContent from "./cart-items-content";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
+import { formatPriceWithTax } from "@/lib/utils";
 
 function UserCartWrapper({ cartItems, setOpenCartSheet }) {
   const navigate = useNavigate();
@@ -15,11 +16,12 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
     cartItems && cartItems.length > 0
       ? cartItems.reduce(
           (sum, currentItem) =>
-            sum +
-            (currentItem?.salePrice > 0
-              ? currentItem?.salePrice
-              : currentItem?.price) *
-              currentItem?.quantity,
+            sum + formatPriceWithTax(
+              (currentItem?.salePrice > 0
+                ? currentItem?.salePrice
+                : currentItem?.price) *
+              currentItem?.quantity
+            ).priceWithTax,
           0
         )
       : 0;
@@ -53,9 +55,10 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
       </div>
       <div className="mt-8 space-y-4">
         <div className="flex justify-between">
-          <span className="font-bold">Total</span>
-          <span className="font-bold"> ₹{totalCartAmount}</span>
+          <span className="font-bold">Subtotal</span>
+          <span className="font-bold"> ₹{totalCartAmount.toFixed(2)}</span>
         </div>
+        <p className="text-xs text-gray-500">Shipping charges calculated at checkout</p>
       </div>
       <Button
         onClick={handleCheckout}

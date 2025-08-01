@@ -5,11 +5,11 @@ import whatsappLogo from "@/assets/whatsapp-logo.png";
 
 const imageSections = [
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/Painting_vtks5n.jpg",
-    alt: "Traditional Paintings",
-    title: "Traditional Paintings",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1753698846/Kanchipuram.jpg",
+    alt: "Kanchipuram Silk Sarees",
+    title: "Kanchipuram Silk Sarees",
     description:
-      "Our collection of traditional paintings showcases rich Indian art forms including Madhubani, Tanjore, and Pattachitra. These pieces celebrate heritage through vibrant colors and detailed brushwork.",
+      "Kanchipuram Silk sarees are renowned for their vibrant colors, intricate zari work, and unmatched durability. Woven from pure mulberry silk, they symbolize South India's rich cultural heritage and are a preferred choice for weddings and grand celebrations.",
   },
   {
     src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/Soft_silk_sarees_bwtpu7.jpg",
@@ -74,6 +74,13 @@ const imageSections = [
     description:
       "With vibrant hues and contemporary designs, Fancy Silk Sarees cater to modern tastes. Perfect for parties and gatherings, they balance trendiness with elegance.",
   },
+  {
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/Painting_vtks5n.jpg",
+    alt: "Traditional Paintings",
+    title: "Traditional Paintings",
+    description:
+      "Our collection of traditional paintings showcases rich Indian art forms including Madhubani, Tanjore, and Pattachitra. These pieces celebrate heritage through vibrant colors and detailed brushwork.",
+  },
 ];
 
 function AboutUs() {
@@ -98,7 +105,7 @@ function AboutUs() {
           <div className="mb-8">
             
             <h1 className="text-4xl md:text-6xl font-bold text-yellow-900 mb-8">
-              Pradhikshaa Ventures
+              Pradhikshaa Silks
             </h1>
           </div>
           
@@ -173,7 +180,7 @@ function AboutUs() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-yellow-900 mb-6">
-              Why Choose Pradhikshaa Ventures?
+              Why Choose Pradhikshaa Silks?
             </h2>
             <div className="w-32 h-2 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto rounded-full mb-8"></div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -475,7 +482,7 @@ function AboutUs() {
                   </h3>
                   <p className="text-lg leading-relaxed opacity-90">
                     Discover the elegance of tradition and the allure of modern design at 
-                    Pradhikshaa Ventures—your destination for timeless style and exceptional 
+                    Pradhikshaa Silks—your destination for timeless style and exceptional 
                     boutique experiences.
                   </p>
                 </div>

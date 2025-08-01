@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { updateCartQuantity, deleteCartItem } from "@/store/shop/cart-slice";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { formatPriceWithTax } from "@/lib/utils";
 
 function ShoppingProductTile({
   product,
@@ -140,18 +141,23 @@ function ShoppingProductTile({
             </span>
           </div>
           <div className="flex justify-between items-center mb-1 sm:mb-2">
-            <span
-              className={`${
-                product?.salePrice > 0 ? "line-through" : ""
-              } text-sm sm:text-base font-semibold text-primary`}
-            >
-              ₹{product?.price}
-            </span>
-            {product?.salePrice > 0 && (
-              <span className="text-sm sm:text-base font-semibold text-primary">
-                ₹{product?.salePrice}
+            <div className="flex flex-col">
+              <span
+                className={`${
+                  product?.salePrice > 0 ? "line-through" : ""
+                } text-sm sm:text-base font-semibold text-primary`}
+              >
+                ₹{formatPriceWithTax(product?.price).displayPrice}
               </span>
-            )}
+              {product?.salePrice > 0 && (
+                <span className="text-sm sm:text-base font-semibold text-primary">
+                  ₹{formatPriceWithTax(product?.salePrice).displayPrice}
+                </span>
+              )}
+              <span className="text-xs text-muted-foreground">
+                Inclusive of taxes
+              </span>
+            </div>
           </div>
         </CardContent>
       </div>

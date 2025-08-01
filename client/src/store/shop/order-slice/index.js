@@ -92,6 +92,62 @@ export const getOrderDetails = createAsyncThunk(
   }
 );
 
+export const downloadInvoice = createAsyncThunk(
+  "order/downloadInvoice",
+  async ({ orderId, userId }) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/shop/order/invoice/${orderId}`,
+        { userId },
+        {
+          responseType: 'blob', // Important for PDF download
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      // Create a blob from the PDF data
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      
+      // Try direct download first
+      try {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `invoice-${orderId}.pdf`);
+        link.style.display = 'none';
+        
+        // Append to body, click, and remove
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        setTimeout(() => {
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        }, 100);
+      } catch (downloadError) {
+        console.log('Direct download failed, opening in new tab:', downloadError);
+        
+        // Fallback: Open in new tab
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        
+        // Clean up after a delay
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 1000);
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Download error:', error);
+      throw error;
+    }
+  }
+);
+
 const shoppingOrderSlice = createSlice({
   name: "shoppingOrderSlice",
   initialState,

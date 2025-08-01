@@ -8,6 +8,7 @@ import { X, ShoppingCart, Truck, Shield, RotateCcw } from "lucide-react";
   import YoutubeEmbed from "../common/YoutubeEmbed";
   import { useEffect, useState, useRef } from "react";
   import { useNavigate } from "react-router-dom";
+  import { formatPriceWithTax } from "@/lib/utils";
 
   function ProductDetailsDialog({ open, setOpen, productDetails }) {
     const dispatch = useDispatch();
@@ -164,10 +165,10 @@ import { X, ShoppingCart, Truck, Shield, RotateCcw } from "lucide-react";
                   {productDetails?.salePrice > 0 ? (
                     <>
                       <span className="text-3xl md:text-4xl font-bold text-green-600">
-                        ₹{productDetails?.salePrice}
+                        ₹{formatPriceWithTax(productDetails?.salePrice).displayPrice}
                       </span>
                       <span className="text-xl md:text-2xl font-medium text-gray-500 line-through">
-                        ₹{productDetails?.price}
+                        ₹{formatPriceWithTax(productDetails?.price).displayPrice}
                       </span>
                       <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                         {Math.round(((productDetails?.price - productDetails?.salePrice) / productDetails?.price) * 100)}% OFF
@@ -175,16 +176,20 @@ import { X, ShoppingCart, Truck, Shield, RotateCcw } from "lucide-react";
                     </>
                   ) : (
                     <span className="text-3xl md:text-4xl font-bold text-primary">
-                      ₹{productDetails?.price}
+                      ₹{formatPriceWithTax(productDetails?.price).displayPrice}
                     </span>
                   )}
+                </div>
+                
+                <div className="text-sm text-gray-600 mb-3">
+                  Inclusive of taxes
                 </div>
                 
                 {productDetails?.salePrice > 0 && (
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-sm text-gray-600">You save:</span>
                     <span className="text-lg font-bold text-red-600">
-                      ₹{productDetails?.price - productDetails?.salePrice}
+                      ₹{(productDetails?.price - productDetails?.salePrice).toFixed(2)}
                     </span>
                   </div>
                 )}

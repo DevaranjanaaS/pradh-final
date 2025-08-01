@@ -1,9 +1,25 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import ShoppingHeader from "./header";
+import ShoppingFooter from "./footer";
 import { useEffect, useState } from "react";
 
 function ShoppingLayout() {
   const [showScrollUp, setShowScrollUp] = useState(false);
+  const location = useLocation();
+
+  // Define pages where footer should be shown
+  const footerPages = [
+    "/shop/home",
+    "/shop/about-us",
+    "/shop/terms-conditions",
+    "/shop/privacy-policy",
+    "/shop/returns-policy",
+    "/shop/refund-policy",
+    "/shop/shipping-policy"
+  ];
+
+  // Check if current page should show footer
+  const shouldShowFooter = footerPages.includes(location.pathname);
 
   useEffect(() => {
     function handleScroll() {
@@ -36,6 +52,8 @@ function ShoppingLayout() {
       <main className="flex flex-col w-full">
         <Outlet />
       </main>
+      {/* Footer - only show on specific pages */}
+      {shouldShowFooter && <ShoppingFooter />}
       {showScrollUp && (
         <button
           onClick={scrollToTop}

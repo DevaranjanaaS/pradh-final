@@ -1,15 +1,22 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { Badge } from "../ui/badge";
 import { DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
+import { Download } from "lucide-react";
+import { getTaxDisplayText } from "@/lib/utils";
+import { downloadInvoice } from "@/store/shop/order-slice";
+import { useToast } from "../ui/use-toast";
 
 function ShoppingOrderDetailsView({ orderDetails }) {
   const { user } = useSelector((state) => state.auth);
   const PLACEHOLDER = "https://via.placeholder.com/80x100?text=No+Image";
   const [productImages, setProductImages] = useState({});
+  const dispatch = useDispatch();
+  const { toast } = useToast();
 
   useEffect(() => {
     async function fetchImages() {
@@ -30,6 +37,22 @@ function ShoppingOrderDetailsView({ orderDetails }) {
     }
     fetchImages();
   }, [orderDetails]);
+
+  const handleDownloadInvoice = () => {
+    if (orderDetails?._id && user?.id) {
+      dispatch(downloadInvoice({ orderId: orderDetails._id, userId: user.id }));
+      toast({
+        title: "Invoice downloaded successfully",
+        description: `Invoice for order ID ${orderDetails._id} downloaded.`,
+      });
+    } else {
+      toast({
+        title: "Error downloading invoice",
+        description: "Order ID or user ID not available.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -131,14 +154,46 @@ function ShoppingOrderDetailsView({ orderDetails }) {
         <Separator />
         <div className="grid gap-4">
           <div className="grid gap-2">
+            <div className="font-medium text-lg">Price Breakdown</div>
+            <div className="grid gap-2 p-3 border rounded-lg bg-gray-50">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Subtotal</span>
+                <span className="font-medium">₹{orderDetails?.subtotal?.toFixed(2) || orderDetails?.totalAmount?.toFixed(2)}</span>
+              </div>
+              {orderDetails?.taxAmount && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">{getTaxDisplayText(orderDetails?.addressInfo?.state)}</span>
+                  <span className="font-medium">₹{orderDetails?.taxAmount?.toFixed(2)}</span>
+                </div>
+              )}
+              {orderDetails?.shippingCharges && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Shipping Charges</span>
+                  <span className="font-medium">₹{orderDetails?.shippingCharges?.toFixed(2)}</span>
+                </div>
+              )}
+              <div className="border-t pt-2">
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Total</span>
+                  <span>₹{orderDetails?.totalAmount?.toFixed(2)}</span>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Inclusive of taxes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Separator />
+        <div className="grid gap-4">
+          <div className="grid gap-2">
             <div className="font-medium text-lg">Shipping Information</div>
             <div className="grid gap-2 p-3 border rounded-lg bg-gray-50">
               <div className="grid gap-1 text-sm">
                 <div className="font-medium text-gray-900">{user?.userName}</div>
                 <div className="text-gray-600">{orderDetails?.addressInfo?.address}</div>
                 <div className="text-gray-600">
-                  {orderDetails?.addressInfo?.city}, {orderDetails?.addressInfo?.pincode}
+                  {orderDetails?.addressInfo?.city}, {orderDetails?.addressInfo?.state}, {orderDetails?.addressInfo?.country}
                 </div>
+                <div className="text-gray-600">Pincode: {orderDetails?.addressInfo?.pincode}</div>
                 <div className="text-gray-600">Phone: {orderDetails?.addressInfo?.phone}</div>
                 {orderDetails?.addressInfo?.notes && (
                   <div className="text-gray-600">
@@ -148,6 +203,13 @@ function ShoppingOrderDetailsView({ orderDetails }) {
               </div>
             </div>
           </div>
+        </div>
+        <Separator />
+        <div className="flex justify-end">
+          <Button onClick={handleDownloadInvoice} className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Download Invoice
+          </Button>
         </div>
       </div>
     </DialogContent>

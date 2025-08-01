@@ -18,6 +18,7 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 const commonFeatureRouter = require("./routes/common/feature-routes");
 const categoriesRouter = require("./routes/common/categories");
 const subcategoriesRouter = require("./routes/common/subcategories");
+const countriesRouter = require("./routes/common/countries");
 const razorpayWebhookRouter = require("./routes/webhooks/razorpay");
 const healthCheck = require("./health");
 const validateEnv = require("./config/validateEnv");
@@ -138,6 +139,7 @@ app.use("/api/shop/review", apiLimiter, shopReviewRouter);
 app.use("/api/common/feature", apiLimiter, commonFeatureRouter);
 app.use("/api/common/categories", apiLimiter, categoriesRouter);
 app.use("/api/common/subcategories", apiLimiter, subcategoriesRouter);
+app.use("/api/common/countries", apiLimiter, countriesRouter);
 
 // Webhooks with no rate limiting (required for payment processing)
 app.use("/api/webhooks", razorpayWebhookRouter);

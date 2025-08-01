@@ -32,6 +32,7 @@ import { getFeatureImages } from "@/store/common-slice";
 import { useNavigate } from "react-router-dom";
 import UserCartWrapper from "@/components/shopping-view/cart-wrapper";
 import ReviewCarousel from "@/components/common/ReviewCarousel";
+import { formatPriceWithTax } from "@/lib/utils";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -52,6 +53,13 @@ const brandsWithIcon = [
 
 // About Us image sections (copied from about-us.jsx)
 const aboutUsImageSections = [
+  {
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1753698846/Kanchipuram.jpg",
+    alt: "Kanchipuram Silk Sarees",
+    title: "Kanchipuram Silk Sarees",
+    description:
+      "Kanchipuram Silk sarees are renowned for their vibrant colors, intricate zari work, and unmatched durability. Woven from pure mulberry silk, they symbolize South India's rich cultural heritage and are a preferred choice for weddings and grand celebrations.",
+  },
   {
     src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/Soft_silk_sarees_bwtpu7.jpg",
     alt: "Soft Silk Sarees",
@@ -239,9 +247,11 @@ function ShoppingHome() {
   const cartArray = cartItems?.items || [];
 
   function MobileCartBar({ cartItems, onCheckout }) {
-    const total = cartItems.reduce(
+    const subtotal = cartItems.reduce(
       (sum, item) =>
-        sum + (item.salePrice > 0 ? item.salePrice : item.price) * item.quantity,
+        sum + formatPriceWithTax(
+          (item.salePrice > 0 ? item.salePrice : item.price) * item.quantity
+        ).priceWithTax,
       0
     );
     
@@ -261,7 +271,7 @@ function ShoppingHome() {
     return (
       <div className="flex items-center justify-between px-4 py-3">
         <span className="font-bold">Cart: {cartItems.length} item(s)</span>
-        <span className="font-bold">₹{total}</span>
+        <span className="font-bold">₹{subtotal.toFixed(2)}</span>
         <Button size="sm" onClick={handleCheckout} className="ml-2">Checkout</Button>
       </div>
     );

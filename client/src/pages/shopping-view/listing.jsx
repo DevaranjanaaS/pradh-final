@@ -17,31 +17,26 @@ import {
   fetchProductDetails,
 } from "@/store/shop/products-slice";
 import { ArrowUpDownIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { formatPriceWithTax } from "@/lib/utils";
+import debounce from "lodash.debounce";
 
 function createSearchParamsHelper(filterParams) {
   const queryParams = [];
-
   for (const [key, value] of Object.entries(filterParams)) {
     if (Array.isArray(value) && value.length > 0) {
       const paramValue = value.join(",");
-
       queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
     }
   }
-
-  console.log(queryParams, "queryParams");
-
   return queryParams.join("&");
 }
 
 function ShoppingListing() {
   const dispatch = useDispatch();
-  const { productList, productDetails } = useSelector(
-    (state) => state.shopProducts
-  );
+  const { productList, productDetails } = useSelector((state) => state.shopProducts);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
   const [filters, setFilters] = useState({});
@@ -52,44 +47,95 @@ function ShoppingListing() {
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
-  const categorySearchParam = searchParams.get("category");
-  const subcategorySearchParam = searchParams.get("subcategory");
-  // Convert pluses to spaces and trim
-  const subcategory = subcategorySearchParam ? subcategorySearchParam.replace(/\+/g, ' ').trim() : null;
+  const prevFiltersRef = useRef({});
+  const prevSortRef = useRef(null);
+
+  useEffect(() => {
+    setSort("price-lowtohigh");
+    const categorySearchParam = searchParams.get("category");
+    const subcategorySearchParam = searchParams.get("subcategory");
+    const subcategory = subcategorySearchParam
+      ? subcategorySearchParam.replace(/\+/g, " ").trim()
+      : null;
+    const categoryArray = categorySearchParam
+      ? decodeURIComponent(categorySearchParam)
+          .split(",")
+          .map((cat) => cat.trim())
+      : [];
+    let initialFilters = {};
+    if (categoryArray.length > 0) {
+      initialFilters = { category: categoryArray };
+    } else if (subcategory) {
+      initialFilters = { subcategory: [subcategory] };
+    } else {
+      const storedFilters = JSON.parse(sessionStorage.getItem("filters")) || {};
+      initialFilters = storedFilters;
+    }
+    setFilters(initialFilters);
+    sessionStorage.setItem("filters", JSON.stringify(initialFilters));
+  }, [searchParams]);
+
+  const debouncedFetchProducts = useRef(
+    debounce((filterParams, sortParams) => {
+      dispatch(fetchAllFilteredProducts({ filterParams, sortParams }));
+    }, 400)
+  ).current;
+
+  useEffect(() => {
+    const filtersChanged = JSON.stringify(prevFiltersRef.current) !== JSON.stringify(filters);
+    const sortChanged = prevSortRef.current !== sort;
+    if (filters && sort && (filtersChanged || sortChanged)) {
+      debouncedFetchProducts(filters, sort);
+      prevFiltersRef.current = filters;
+      prevSortRef.current = sort;
+    }
+  }, [filters, sort, debouncedFetchProducts]);
+
+  const updateURLFromFilters = useCallback(
+    (newFilters) => {
+      if (newFilters && Object.keys(newFilters).length > 0) {
+        const createQueryString = createSearchParamsHelper(newFilters);
+        setSearchParams(new URLSearchParams(createQueryString));
+      } else {
+        setSearchParams(new URLSearchParams());
+      }
+    },
+    [setSearchParams]
+  );
+
+  function handleFilter(getSectionId, getCurrentOption, newFilters = null) {
+    let cpyFilters = newFilters || { ...filters };
+    if (newFilters) {
+      setFilters(cpyFilters);
+      sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
+      updateURLFromFilters(cpyFilters);
+      return;
+    }
+    const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
+    if (indexOfCurrentSection === -1) {
+      cpyFilters = { ...cpyFilters, [getSectionId]: [getCurrentOption] };
+    } else {
+      const indexOfCurrentOption = cpyFilters[getSectionId].indexOf(getCurrentOption);
+      if (indexOfCurrentOption === -1) cpyFilters[getSectionId].push(getCurrentOption);
+      else cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
+      if (cpyFilters[getSectionId].length === 0) {
+        delete cpyFilters[getSectionId];
+      }
+    }
+    setFilters(cpyFilters);
+    sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
+    updateURLFromFilters(cpyFilters);
+  }
 
   function handleSort(value) {
     setSort(value);
   }
 
-  function handleFilter(getSectionId, getCurrentOption) {
-    let cpyFilters = { ...filters };
-    const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
-
-    if (indexOfCurrentSection === -1) {
-      cpyFilters = {
-        ...cpyFilters,
-        [getSectionId]: [getCurrentOption],
-      };
-    } else {
-      const indexOfCurrentOption =
-        cpyFilters[getSectionId].indexOf(getCurrentOption);
-
-      if (indexOfCurrentOption === -1)
-        cpyFilters[getSectionId].push(getCurrentOption);
-      else cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
-    }
-
-    setFilters(cpyFilters);
-    sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
-  }
-
   function handleGetProductDetails(getCurrentProductId) {
-    //console.log(getCurrentProductId);
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    // Check if user is authenticated
     if (!user) {
       toast({
         title: "Please login to add items to cart",
@@ -99,10 +145,7 @@ function ShoppingListing() {
       navigate("/auth/login");
       return;
     }
-
-    //console.log(cartItems);
     let getCartItems = cartItems.items || [];
-
     if (getCartItems.length) {
       const indexOfCurrentItem = getCartItems.findIndex(
         (item) => item.productId === getCurrentProductId
@@ -114,12 +157,10 @@ function ShoppingListing() {
             title: `Only ${getQuantity} quantity can be added for this item`,
             variant: "destructive",
           });
-
           return;
         }
       }
     }
-
     dispatch(
       addToCart({
         userId: user?.id,
@@ -137,34 +178,6 @@ function ShoppingListing() {
   }
 
   useEffect(() => {
-    setSort("price-lowtohigh");
-    // If category or subcategory is present in URL, set it as filter
-    if (categorySearchParam) {
-      setFilters({ category: [categorySearchParam] });
-      sessionStorage.setItem("filters", JSON.stringify({ category: [categorySearchParam] }));
-    } else if (subcategory) {
-      setFilters({ subcategory: [subcategory] });
-      sessionStorage.setItem("filters", JSON.stringify({ subcategory: [subcategory] }));
-    } else {
-      setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-    }
-  }, [categorySearchParam, subcategory]);
-
-  useEffect(() => {
-    if (filters && Object.keys(filters).length > 0) {
-      const createQueryString = createSearchParamsHelper(filters);
-      setSearchParams(new URLSearchParams(createQueryString));
-    }
-  }, [filters]);
-
-  useEffect(() => {
-    if (filters !== null && sort !== null)
-      dispatch(
-        fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
-      );
-  }, [dispatch, sort, filters]);
-
-  useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
@@ -177,16 +190,18 @@ function ShoppingListing() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // For mobile view, show cart at the bottom of product page
   const cartArray = cartItems?.items || [];
 
   function MobileCartBar({ cartItems, onCheckout }) {
-    const total = cartItems.reduce(
+    const subtotal = cartItems.reduce(
       (sum, item) =>
-        sum + (item.salePrice > 0 ? item.salePrice : item.price) * item.quantity,
+        sum +
+        formatPriceWithTax(
+          (item.salePrice > 0 ? item.salePrice : item.price) * item.quantity
+        ).priceWithTax,
       0
     );
-    
+
     const handleCheckout = () => {
       if (!user) {
         toast({
@@ -199,11 +214,11 @@ function ShoppingListing() {
       }
       onCheckout();
     };
-    
+
     return (
       <div className="flex items-center justify-between px-4 py-3">
         <span className="font-bold">Cart: {cartItems.length} item(s)</span>
-        <span className="font-bold">₹{total}</span>
+        <span className="font-bold">₹{subtotal.toFixed(2)}</span>
         <Button size="sm" onClick={handleCheckout} className="ml-2">
           Checkout
         </Button>
@@ -211,11 +226,9 @@ function ShoppingListing() {
     );
   }
 
-  //console.log(productList, "productListproductListproductList");
-
   return (
     <div className="mt-16 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
-      <ProductFilter filters={filters} handleFilter={handleFilter} />
+      <ProductFilter filters={filters} handleFilter={handleFilter} isMobile={isMobile} />
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-extrabold">All Products</h2>
@@ -253,7 +266,7 @@ function ShoppingListing() {
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <ShoppingProductTile
-                  key={productItem._id} // Don't forget to add a unique key
+                  key={productItem._id}
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
                   handleAddtoCart={handleAddtoCart}
@@ -267,7 +280,6 @@ function ShoppingListing() {
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
       />
-      {/* Show cart at the bottom on mobile view */}
       {isMobile && cartArray.length > 0 && (
         <div className="fixed bottom-0 left-0 w-full z-50 bg-white border-t border-gray-200 shadow-lg">
           <div className="max-w-lg mx-auto">

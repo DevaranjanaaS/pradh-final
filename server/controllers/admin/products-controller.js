@@ -52,15 +52,27 @@ const addProduct = async (req, res) => {
       averageReview,
     } = req.body;
 
-    // Fetch category and subcategory names using their IDs
+    // Fetch category name using its ID
     const categoryDoc = await Category.findById(category);
-    const subcategoryDoc = await Subcategory.findById(subcategory);
 
-    if (!categoryDoc || !subcategoryDoc) {
+    if (!categoryDoc) {
       return res.status(400).json({
         success: false,
-        message: "Invalid category or subcategory ID",
+        message: "Invalid category ID",
       });
+    }
+
+    // Handle optional subcategory
+    let subcategoryName = "";
+    if (subcategory) {
+      const subcategoryDoc = await Subcategory.findById(subcategory);
+      if (!subcategoryDoc) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid subcategory ID",
+      });
+      }
+      subcategoryName = subcategoryDoc.name;
     }
 
     const newlyCreatedProduct = new Product({
@@ -68,7 +80,7 @@ const addProduct = async (req, res) => {
       title,
       description,
       category: categoryDoc.name,
-      subcategory: subcategoryDoc.name,
+      subcategory: subcategoryName,
       youtubeLink,
       price,
       salePrice,
@@ -140,16 +152,18 @@ const editProduct = async (req, res) => {
     }
 
     // If subcategory is an ID, fetch its name
-    let subcategoryName = subcategory;
+    let subcategoryName = "";
     if (subcategory && subcategory.length === 24) {
       const subcategoryDoc = await Subcategory.findById(subcategory);
       if (subcategoryDoc) subcategoryName = subcategoryDoc.name;
+    } else if (subcategory) {
+      subcategoryName = subcategory;
     }
 
     findProduct.title = title || findProduct.title;
     findProduct.description = description || findProduct.description;
-    findProduct.category = category || findProduct.category;
-    findProduct.subcategory = subcategory || findProduct.subcategory;
+    findProduct.category = categoryName || findProduct.category;
+    findProduct.subcategory = subcategoryName || findProduct.subcategory;
     findProduct.youtubeLink = youtubeLink || findProduct.youtubeLink;
     findProduct.price = price === "" ? 0 : price || findProduct.price;
     findProduct.salePrice =

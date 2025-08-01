@@ -24,7 +24,13 @@ function AddressCard({
     >
       <CardContent className="grid p-4 gap-4">
         <Label>Address: {addressInfo?.address}</Label>
-        <Label>City: {addressInfo?.city}</Label>
+        {addressInfo?.city && addressInfo.city.trim() !== "" && (
+          <Label>City: {addressInfo?.city}</Label>
+        )}
+        {addressInfo?.state && addressInfo.state.trim() !== "" && (
+          <Label>State: {addressInfo?.state}</Label>
+        )}
+        <Label>Country: {addressInfo?.country}</Label>
         <Label>pincode: {addressInfo?.pincode}</Label>
         <Label>Phone: {addressInfo?.phone}</Label>
         <Label>

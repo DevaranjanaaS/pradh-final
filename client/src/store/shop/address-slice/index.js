@@ -10,6 +10,7 @@ const initialState = {
 export const addNewAddress = createAsyncThunk(
   "/addresses/addNewAddress",
   async (formData) => {
+    console.log("Sending address data:", formData);
     const response = await axios.post(
       `${API_BASE_URL}/shop/address/add`,
       formData

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteCartItem, updateCartQuantity } from "@/store/shop/cart-slice";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { formatPriceWithTax } from "@/lib/utils";
 
 function UserCartItemsContent({ cartItem }) {
   const { user } = useSelector((state) => state.auth);
@@ -127,13 +128,18 @@ function UserCartItemsContent({ cartItem }) {
         </div>
       </div>
       <div className="flex flex-col items-end">
-        <p className="font-semibold">
-           ₹
-          {(
-            (cartItem?.salePrice > 0 ? cartItem?.salePrice : cartItem?.price) *
-            cartItem?.quantity
-          ).toFixed(2)}
-        </p>
+        <div className="flex flex-col items-end">
+          <p className="font-semibold">
+             ₹
+            {formatPriceWithTax(
+              (cartItem?.salePrice > 0 ? cartItem?.salePrice : cartItem?.price) *
+              cartItem?.quantity
+            ).displayPrice}
+          </p>
+          <span className="text-xs text-muted-foreground">
+            Inclusive of taxes
+          </span>
+        </div>
         <Trash
           onClick={() => handleCartItemDelete(cartItem)}
           className="cursor-pointer mt-1"

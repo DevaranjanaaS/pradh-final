@@ -11,10 +11,13 @@ import {
 } from "@/store/shop/address-slice";
 import AddressCard from "./address-card";
 import { useToast } from "../ui/use-toast";
+import LocationSelector from "./location-selector";
 
 const initialAddressFormData = {
   address: "",
   city: "",
+  state: "",
+  country: "",
   phone: "",
   pincode: "",
   notes: "",
@@ -25,6 +28,8 @@ const initialAddressFormData = {
 function Address({ setCurrentSelectedAddress, selectedId }) {
   const [formData, setFormData] = useState(initialAddressFormData);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [statesData, setStatesData] = useState([]);
+  const [citiesData, setCitiesData] = useState([]);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { addressList } = useSelector((state) => state.shopAddress);
@@ -46,11 +51,17 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     // Always coerce isGift to boolean and phone/pincode to string, and ensure notes is always present
     const safeFormData = {
       ...formData,
+      country: formData.country || "",
+      state: formData.state || "",
+      city: formData.city || "",
       phone: String(formData.phone || "").replace(/\D/g, "").slice(0, 10),
       pincode: String(formData.pincode || "").replace(/\D/g, "").slice(0, 6),
       notes: formData.notes || "",
       isGift: Boolean(formData.isGift),
     };
+
+    console.log("Form data before sending:", formData);
+    console.log("Safe form data:", safeFormData);
 
     currentEditedId !== null
       ? dispatch(
@@ -103,6 +114,8 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     setFormData({
       ...formData,
       address: getCuurentAddress?.address,
+      country: getCuurentAddress?.country,
+      state: getCuurentAddress?.state,
       city: getCuurentAddress?.city,
       phone: getCuurentAddress?.phone,
       pincode: getCuurentAddress?.pincode,
@@ -117,11 +130,24 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     if (formData.isGift) {
       if (!formData.giftMessage || formData.giftMessage.trim() === "") return false;
     }
-    // Make 'notes' optional by excluding it from required check
-    return Object.keys(formData)
-      .filter((key) => key !== "giftMessage" && key !== "isGift" && key !== "notes")
-      .map((key) => formData[key].trim() !== "")
-      .every((item) => item);
+    
+    // Check required fields: address, country, pincode, phone
+    const requiredFields = ['address', 'country', 'pincode', 'phone'];
+    const basicValidation = requiredFields.every(field => formData[field] && formData[field].trim() !== "");
+    
+    if (!basicValidation) return false;
+    
+    // If states are available, state is required
+    if (statesData.length > 0 && (!formData.state || formData.state.trim() === "")) {
+      return false;
+    }
+    
+    // If cities are available, city is required
+    if (citiesData.length > 0 && (!formData.city || formData.city.trim() === "")) {
+      return false;
+    }
+    
+    return true;
   }
 
   useEffect(() => {
@@ -151,6 +177,12 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
+        <LocationSelector 
+          formData={formData} 
+          setFormData={setFormData} 
+          setStatesData={setStatesData}
+          setCitiesData={setCitiesData}
+        />
         <CommonForm
           formControls={addressFormControls}
           formData={formData}

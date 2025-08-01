@@ -2,21 +2,27 @@ const Address = require("../../models/Address");
 
 const addAddress = async (req, res) => {
   try {
-    const { userId, address, city, pincode, phone, notes, isGift, giftMessage } = req.body;
+    const { userId, address, city, state, country, pincode, phone, notes, isGift, giftMessage } = req.body;
+    
+    console.log("Received address data:", req.body);
 
-    if (!userId || !address || !city || !pincode || !phone ) {
+    // Basic required fields: userId, address, country, pincode, phone
+    if (!userId || !address || !country || !pincode || !phone ) {
+      console.log("Missing required fields:", { userId, address, country, pincode, phone });
       return res.status(400).json({
         success: false,
-        message: "Invalid data provided!",
+        message: "Invalid data provided! Required fields: userId, address, country, pincode, phone",
       });
     }
 
     const newlyCreatedAddress = new Address({
       userId,
       address,
-      city,
+      city: city || "",
+      state: state || "",
+      country,
       pincode,
-      notes,
+      notes: notes || "",
       phone,
       isGift: typeof isGift !== 'undefined' ? isGift : false,
       giftMessage: isGift ? giftMessage : "",
@@ -29,10 +35,10 @@ const addAddress = async (req, res) => {
       data: newlyCreatedAddress,
     });
   } catch (e) {
-    //console.log(e);
+    console.log("Address creation error:", e);
     res.status(500).json({
       success: false,
-      message: "Error",
+      message: "Error creating address",
     });
   }
 };

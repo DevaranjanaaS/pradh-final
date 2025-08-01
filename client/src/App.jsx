@@ -23,6 +23,11 @@ import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
 import AboutUs from "./pages/shopping-view/about-us";
+import TermsConditions from "./pages/shopping-view/terms-conditions";
+import PrivacyPolicy from "./pages/shopping-view/privacy-policy";
+import ReturnsPolicy from "./pages/shopping-view/returns-policy";
+import RefundPolicy from "./pages/shopping-view/refund-policy";
+import ShippingPolicy from "./pages/shopping-view/shipping-policy";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -90,6 +95,11 @@ function App() {
           <Route path="payment-success" element={<PaymentSuccessPage />} />
           <Route path="search" element={<SearchProducts />} />
           <Route path="about-us" element={<AboutUs />} />
+          <Route path="terms-conditions" element={<TermsConditions />} />
+          <Route path="privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="returns-policy" element={<ReturnsPolicy />} />
+          <Route path="refund-policy" element={<RefundPolicy />} />
+          <Route path="shipping-policy" element={<ShippingPolicy />} />
         </Route>
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />

@@ -3,7 +3,9 @@ const razorpay = require("../../helpers/razorpay");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+const User = require("../../models/User");
 const crypto = require("crypto");
+const InvoiceGenerator = require("../../helpers/invoice-generator");
 
 const createOrder = async (req, res) => {
   try {
@@ -15,6 +17,9 @@ const createOrder = async (req, res) => {
       paymentMethod,
       paymentStatus,
       totalAmount,
+      subtotal,
+      taxAmount,
+      shippingCharges,
       orderDate,
       orderUpdateDate,
       paymentId,
@@ -45,6 +50,9 @@ const createOrder = async (req, res) => {
         orderStatus,
         paymentMethod,
         totalAmount,
+        subtotal,
+        taxAmount,
+        shippingCharges,
         orderDate,
         orderUpdateDate,
         razorpayOrderId: razorpayOrder.id, // Store Razorpay order ID
@@ -66,6 +74,9 @@ const createOrder = async (req, res) => {
       paymentMethod,
       paymentStatus,
       totalAmount,
+      subtotal,
+      taxAmount,
+      shippingCharges,
       orderDate,
       orderUpdateDate,
       paymentId,
@@ -218,10 +229,76 @@ const verifyRazorpayPayment = async (req, res) => {
   }
 };
 
+// Download invoice as PDF
+const downloadInvoice = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { userId } = req.body;
+
+    console.log("Download invoice request:", { orderId, userId });
+
+    // Find the order
+    const order = await Order.findById(orderId);
+    if (!order) {
+      console.log("Order not found:", orderId);
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // Verify user owns this order
+    if (order.userId !== userId) {
+      console.log("Access denied for user:", userId, "order:", orderId);
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
+    }
+
+    // Get user data
+    const user = await User.findById(userId);
+    if (!user) {
+      console.log("User not found:", userId);
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    console.log("Generating PDF for order:", orderId);
+
+    // Generate PDF invoice
+    const invoiceGenerator = new InvoiceGenerator();
+    const pdfBuffer = await invoiceGenerator.generatePDFBuffer(order, user);
+
+    console.log("PDF generated, size:", pdfBuffer.length, "bytes");
+
+    // Set response headers for PDF download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="invoice-${orderId}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length);
+    res.setHeader('Cache-Control', 'no-cache');
+
+    // Send the PDF
+    res.send(pdfBuffer);
+
+    console.log("PDF sent successfully");
+
+  } catch (error) {
+    console.error("Invoice generation error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error generating invoice",
+    });
+  }
+};
+
 module.exports = {
   createOrder,
   capturePayment,
   getAllOrdersByUser,
   getOrderDetails,
   verifyRazorpayPayment,
+  downloadInvoice,
 };

@@ -16,18 +16,51 @@ import {
   getAllOrdersByUserId,
   getOrderDetails,
   resetOrderDetails,
+  downloadInvoice,
 } from "@/store/shop/order-slice";
 import { Badge } from "../ui/badge";
+import { Download } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 function ShoppingOrders() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [downloadingInvoice, setDownloadingInvoice] = useState(null);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
+  const { toast } = useToast();
 
   function handleFetchOrderDetails(getId) {
     dispatch(getOrderDetails(getId));
   }
+
+  const handleDownloadInvoice = async (orderId) => {
+    if (orderId && user?.id) {
+      setDownloadingInvoice(orderId);
+      try {
+        await dispatch(downloadInvoice({ orderId, userId: user.id })).unwrap();
+        toast({
+          title: "Invoice downloaded successfully",
+          description: `Invoice for order ID ${orderId} downloaded.`,
+        });
+      } catch (error) {
+        console.error('Download failed:', error);
+        toast({
+          title: "Error downloading invoice",
+          description: "Failed to download invoice. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setDownloadingInvoice(null);
+      }
+    } else {
+      toast({
+        title: "Error downloading invoice",
+        description: "Order ID or user ID not available.",
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     dispatch(getAllOrdersByUserId(user?.id));
@@ -83,13 +116,31 @@ function ShoppingOrders() {
                           dispatch(resetOrderDetails());
                         }}
                       >
-                        <Button
-                          onClick={() =>
-                            handleFetchOrderDetails(orderItem?._id)
-                          }
-                        >
-                          View Details
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() =>
+                              handleFetchOrderDetails(orderItem?._id)
+                            }
+                          >
+                            View Details
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDownloadInvoice(orderItem?._id)}
+                            className="flex items-center gap-1"
+                            disabled={downloadingInvoice === orderItem?._id}
+                          >
+                            {downloadingInvoice === orderItem?._id ? (
+                              "Downloading..."
+                            ) : (
+                              <>
+                                <Download className="h-4 w-4" />
+                                Invoice
+                              </>
+                            )}
+                          </Button>
+                        </div>
                         <ShoppingOrderDetailsView orderDetails={orderDetails} />
                       </Dialog>
                     </TableCell>

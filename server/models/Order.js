@@ -16,6 +16,8 @@ const OrderSchema = new mongoose.Schema({
     addressId: String,
     address: String,
     city: String,
+    state: String,
+    country: String,
     pincode: String,
     phone: String,
     notes: String,
@@ -26,6 +28,9 @@ const OrderSchema = new mongoose.Schema({
   paymentMethod: String,
   paymentStatus: { type: String, default: "pending" },
   totalAmount: Number,
+  subtotal: Number,
+  taxAmount: Number,
+  shippingCharges: Number,
   orderDate: Date,
   orderUpdateDate: Date,
   razorpayOrderId: String, // Store Razorpay order ID for webhook matching
