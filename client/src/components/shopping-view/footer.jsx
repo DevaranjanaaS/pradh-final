@@ -110,10 +110,10 @@ function ShoppingFooter() {
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-[#C2882B]" />
                 <a
-                  href="mailto:pradhikshaasilks@gmail.com"
+                  href="mailto:pradhikshaaqueries@gmail.com"
                   className="text-gray-700 hover:text-[#C2882B] transition-colors text-sm"
                 >
-                  pradhikshaasilks@gmail.com
+                  pradhikshaaqueries@gmail.com
                 </a>
               </div>
             </div>
@@ -124,7 +124,8 @@ function ShoppingFooter() {
         <div className="border-t border-[#f3e6c4] mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-500 text-sm">
-              © {currentYear} Pradhikshaa Silks. All rights reserved.
+              © {currentYear} Pradhikshaa Silks. All rights reserved. 
+              <br/> Designed by Sun Info Media.
             </p>
             <div className="flex space-x-6">
               <Link

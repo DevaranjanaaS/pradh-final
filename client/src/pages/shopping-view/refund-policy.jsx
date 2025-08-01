@@ -54,7 +54,7 @@ function RefundPolicy() {
               <p className="text-sm text-gray-600">
                 <strong>Contact Information:</strong><br />
                 For refund-related questions, please contact us at:<br />
-                Email: pradhikshaasilks@gmail.com<br />
+                Email: pradhikshaaqueries@gmail.com<br />
                 Phone: +91 99948 19203
               </p>
             </div>

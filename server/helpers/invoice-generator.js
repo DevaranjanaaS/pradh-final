@@ -118,7 +118,7 @@ class InvoiceGenerator {
     
     // Contact information
     doc.fontSize(10)
-       .text('Email: pradhikshaasilks@gmail.com', 50, 110)
+       .text('Email: pradhikshaaqueries@gmail.com', 50, 110)
        .text('Phone: +91 99948 19203', 50, 125);
     
     // Add a line separator
@@ -294,7 +294,7 @@ class InvoiceGenerator {
        .font('Helvetica')
        .fillColor('#6b7280')
        .text('Thank you for your purchase!', 50, 750)
-       .text('For any queries, please contact us at pradhikshaasilks@gmail.com', 50, 765)
+       .text('For any queries, please contact us at pradhikshaaqueries@gmail.com', 50, 765)
        .text('This is a computer generated invoice.', 50, 780)
        .text(`Full Invoice ID: ${orderData?._id?.toString() || 'N/A'}`, 50, 795);
   }

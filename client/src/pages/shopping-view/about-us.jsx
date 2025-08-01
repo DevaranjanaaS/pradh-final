@@ -103,7 +103,6 @@ function AboutUs() {
       <section className="relative py-20 px-6 text-center">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            
             <h1 className="text-4xl md:text-6xl font-bold text-yellow-900 mb-8">
               Pradhikshaa Silks
             </h1>
@@ -119,6 +118,93 @@ function AboutUs() {
                 Our unwavering commitment to customer satisfaction is reflected in outstanding service, 
                 a seamless shopping experience, and a comprehensive return policy that puts your needs first.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Founder Section */}
+      <section className="py-20 px-6 bg-white/50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-yellow-900 mb-6">
+              Our Founder
+            </h2>
+            <div className="w-32 h-2 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto rounded-full mb-8"></div>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Meet the visionary behind Pradhikshaa Silks - a passion for tradition, excellence, and timeless elegance.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Founder Image */}
+            <div className="relative">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-yellow-600/20 rounded-3xl"></div>
+                <img
+                  src="https://via.placeholder.com/600x700/f59e0b/ffffff?text=Founder+Photo"
+                  alt="Founder of Pradhikshaa Silks"
+                  className="w-full h-[600px] object-cover rounded-3xl shadow-2xl border-4 border-white"
+                />
+                <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+                  <h3 className="text-2xl font-bold text-yellow-900 mb-2">Mrs. Vaira Sundari</h3>
+                  <p className="text-lg text-gray-600">Founder & Creative Director</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Founder Content */}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <div className="w-20 h-1 bg-yellow-400 rounded-full"></div>
+                <h3 className="text-3xl font-bold text-yellow-800">
+                  A Vision Born from Passion
+                </h3>
+              </div>
+              
+              <div className="space-y-6 text-gray-700 leading-relaxed">
+                <p className="text-lg font-medium text-yellow-800">
+                  Mrs. Vaira Sundari is the heart and soul behind this brand.
+                </p>
+                
+                <p>
+                  A self-made woman who turned her resilience into something extraordinary. 
+                  With a deep love for tradition and design, she handpicks every saree herself, 
+                  curating collections that celebrate culture, elegance, and authenticity. 
+                  Each piece tells a story - not just of craftsmanship, but of the care 
+                  and personal touch she pours into her work.
+                </p>
+                
+                <p>
+                  She also designs unique terracotta jewellery, combining art and heritage 
+                  in ways that speak to the modern woman who still values her roots. 
+                  This store isn't just a business - it's her journey, her dream, 
+                  and her tribute to every woman finding her power.
+                </p>
+
+                <p>
+                  Our founder, Mrs. Vaira Sundari, solely relies on creativity, 
+                  ambition and passion that has resulted in such a remarkable achievement 
+                  of founding this company. She is a woman who values culture and has ensured 
+                  to pour innovation and quality into each and every design. 
+                  Each piece she creates is a reflection of her commitment to quality, and expressive design.
+                </p>
+
+                <p>
+                  She is fueled by a clear vision to produce authentic and unique designs, 
+                  and collaborates closely with weavers and professional designers to create 
+                  the pieces for lovers of fashion and legacy. She values our ancestral 
+                  heritage and believes that fashion should not only reflect the latest trends, 
+                  but also honor our heritage and lineage.
+                </p>
+
+                <p>
+                  Moreover, she is a very talented artist herself and has used her creativity 
+                  and talent to expand her vision into creating this company. She is an extremely 
+                  devoted entrepreneur with an exceptional eye for detail, consistently producing 
+                  work that is both aesthetically pleasing and culturally striking.
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -52,7 +52,7 @@ function PrivacyPolicy() {
               </p>
               <div className="bg-blue-50 p-4 rounded-lg mb-4">
                 <p className="text-blue-800">
-                  <strong>Email:</strong> pradhikshaasilks@gmail.com<br />
+                  <strong>Email:</strong> pradhikshaaqueries@gmail.com<br />
                   <strong>Phone:</strong> +91 99948 19203
                 </p>
               </div>
@@ -113,7 +113,7 @@ function PrivacyPolicy() {
               <p className="text-sm text-gray-600">
                 <strong>Contact Information:</strong><br />
                 For any questions about this Privacy Policy, please contact us at:<br />
-                Email: pradhikshaasilks@gmail.com<br />
+                Email: pradhikshaaqueries@gmail.com<br />
                 Phone: +91 99948 19203
               </p>
             </div>
