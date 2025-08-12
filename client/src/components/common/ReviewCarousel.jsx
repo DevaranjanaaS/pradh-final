@@ -11,7 +11,11 @@ import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Quote, Star, User } from "lucide-react";
+import { Quote, Star, User, ExternalLink, QrCode, MessageCircle, ArrowRight } from "lucide-react";
+import googleReviewQr from "../../assets/google-review-qr.jpeg";
+
+// Configuration
+const GOOGLE_REVIEW_LINK = "https://g.page/r/CXDrLf_SMBD1EAI/review";
 
 // Helper: Fetch reviews from backend (replace with your actual API call)
 async function fetchReviews() {
@@ -38,6 +42,7 @@ export default function ReviewCarousel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showGoogleQR, setShowGoogleQR] = useState(false);
   const swiperRef = useRef(null);
   
   // Form state
@@ -105,6 +110,11 @@ export default function ReviewCarousel() {
     }
   }
 
+  // Handle Google Review redirect
+  const handleGoogleReview = () => {
+    window.open(GOOGLE_REVIEW_LINK, "_blank", "noopener,noreferrer");
+  };
+
   // Render star rating display
   const renderStars = (rating) => {
     return (
@@ -131,17 +141,78 @@ export default function ReviewCarousel() {
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
             What Our Customers Say
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
             Don't just take our word for it - hear from our satisfied customers
           </p>
-          {user && (
-            <Button 
-              className="mt-6 bg-primary hover:bg-primary/90"
-              onClick={() => setShowModal(true)}
-            >
-              Share Your Experience
-            </Button>
-          )}
+          
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {user && (
+              <Button 
+                className="bg-primary hover:bg-primary/90 px-6 py-2"
+                onClick={() => setShowModal(true)}
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Share Your Experience
+              </Button>
+            )}
+            
+            {/* Google Review Section */}
+            <div className="flex flex-col sm:flex-row gap-3 items-center">
+              <Button 
+                variant="outline" 
+                className="border-[#C2882B] text-[#A06A17] hover:bg-amber-50 px-6 py-2"
+                onClick={handleGoogleReview}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Review us on Google
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="text-[#C2882B] hover:text-[#A06A17] hover:bg-amber-50"
+                onClick={() => setShowGoogleQR(true)}
+              >
+                <QrCode className="w-4 h-4 mr-1" />
+                QR Code
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Google Review CTA Banner */}
+        <div className="bg-gradient-to-r from-[#C2882B] to-[#A06A17] rounded-2xl p-6 mb-12 text-white shadow-lg">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <h3 className="text-xl font-semibold mb-2">Love our service?</h3>
+              <p className="text-amber-100 mb-4">Help others discover us by leaving a Google review!</p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                <Button 
+                  variant="secondary"
+                  className="bg-white text-[#A06A17] hover:bg-amber-50"
+                  onClick={handleGoogleReview}
+                >
+                  <Star className="w-4 h-4 mr-2 fill-current" />
+                  Leave Google Review
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+                <Button 
+                  variant="ghost"
+                  className="text-white border-white hover:bg-[#A06A17]"
+                  onClick={() => setShowGoogleQR(true)}
+                >
+                  <QrCode className="w-4 h-4 mr-2" />
+                  Scan QR Code
+                </Button>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center">
+                <Star className="w-12 h-12 text-yellow-300 fill-current" />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Loading State */}
@@ -162,9 +233,16 @@ export default function ReviewCarousel() {
         {/* Empty State */}
         {!loading && !error && reviews.length === 0 && (
           <div className="text-center py-16">
-            <div className="text-gray-400 text-lg">
+            <div className="text-gray-400 text-lg mb-4">
               No reviews yet. Be the first to share your experience!
             </div>
+            <Button 
+              className="bg-[#C2882B] hover:bg-[#A06A17] text-white"
+              onClick={handleGoogleReview}
+            >
+              <Star className="w-4 h-4 mr-2" />
+              Leave Google Review
+            </Button>
           </div>
         )}
 
@@ -183,14 +261,13 @@ export default function ReviewCarousel() {
               pagination={{
                 clickable: true,
                 dynamicBullets: true,
-                // To style bullets, use CSS targeting .swiper-pagination-bullet and .swiper-pagination-bullet-active
               }}
               autoplay={{
                 delay: 5000,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               }}
-              loop={true} // <-- Add this line for infinite loop
+              loop={true}
               breakpoints={{
                 640: { slidesPerView: 1 },
                 768: { slidesPerView: 2 },
@@ -291,6 +368,24 @@ export default function ReviewCarousel() {
                   {formError}
                 </div>
               )}
+              
+              {/* Suggestion for Google Review */}
+              <div className="bg-amber-50 border border-[#C2882B] rounded-lg p-4">
+                <p className="text-sm text-[#A06A17] mb-2">
+                  <strong>💡 Pro tip:</strong> Consider leaving a Google review too!
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="border-[#C2882B] text-[#A06A17] hover:bg-amber-100"
+                  onClick={handleGoogleReview}
+                >
+                  <ExternalLink className="w-3 h-3 mr-1" />
+                  Google Review
+                </Button>
+              </div>
+
               <div className="flex justify-end space-x-3">
                 <Button
                   type="button"
@@ -309,6 +404,44 @@ export default function ReviewCarousel() {
                 </Button>
               </div>
             </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Google QR Code Modal */}
+        <Dialog open={showGoogleQR} onOpenChange={setShowGoogleQR}>
+          <DialogContent className="max-w-sm w-full">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold text-center">
+                Scan to Review on Google
+              </DialogTitle>
+            </DialogHeader>
+            <div className="text-center space-y-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <img
+                  src={googleReviewQr}
+                  alt="Google Review QR Code"
+                  className="w-48 h-48 mx-auto rounded-lg shadow-sm"
+                />
+              </div>
+              <p className="text-sm text-gray-600">
+                Scan this QR code with your phone camera to leave us a Google review
+              </p>
+              <div className="flex flex-col gap-2">
+                <Button
+                  onClick={handleGoogleReview}
+                  className="bg-[#C2882B] hover:bg-[#A06A17] text-white"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Open Google Reviews
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowGoogleQR(false)}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
       </div>

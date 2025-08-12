@@ -1,10 +1,14 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
 import { Separator } from "../ui/separator";
 import { API_BASE_URL } from "../../config";
+import { X } from "lucide-react";
+import { Button } from "../ui/button";
 
-function ProductFilter({ filters, handleFilter, isMobile }) {
+// The component now accepts an `isCartVisible` prop to know when the checkout bar is shown.
+function ProductFilter({ filters, handleFilter, isMobile, isCartVisible }) {
   const [categoryData, setCategoryData] = useState({ categories: [], subcategories: [] });
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
 
@@ -17,43 +21,34 @@ function ProductFilter({ filters, handleFilter, isMobile }) {
       .catch(() => setCategoryData({ categories: [], subcategories: [] }));
   }, []);
 
-  // Get selected categories
   const selectedCategories = filters?.category || [];
 
-  // Filter subcategories based on selected categories
   const availableSubcategories = categoryData.subcategories.filter(sub => {
     if (selectedCategories.length === 0) return false;
     const parentCategory = categoryData.categories.find(cat => cat.id === sub.categoryId);
     return parentCategory && selectedCategories.includes(parentCategory.name);
   });
 
-  // Custom handler for category selection that clears subcategory filters
   const handleCategoryFilter = (categoryName) => {
     let newFilters = { ...filters };
     if (newFilters.subcategory) {
       delete newFilters.subcategory;
     }
-    const currentSection = Object.keys(newFilters).indexOf("category");
-    if (currentSection === -1) {
-      newFilters = { ...newFilters, category: [categoryName] };
+    const index = (newFilters.category || []).indexOf(categoryName);
+    if (index === -1) {
+      newFilters = { ...newFilters, category: [...(newFilters.category || []), categoryName] };
     } else {
-      const index = newFilters.category.indexOf(categoryName);
-      if (index === -1) {
-        newFilters.category.push(categoryName);
-      } else {
-        newFilters.category.splice(index, 1);
-        if (newFilters.category.length === 0 && newFilters.subcategory) {
-          delete newFilters.subcategory;
-        }
+      newFilters.category.splice(index, 1);
+      if (newFilters.category.length === 0 && newFilters.subcategory) {
+        delete newFilters.subcategory;
       }
     }
     handleFilter("category", categoryName, newFilters);
   };
 
-  // Extracted filter rendering to avoid duplication
   function renderFilters() {
     return (
-      <div>
+      <div className="space-y-4">
         <div>
           <h3 className="text-base font-bold">Category</h3>
           <div className="grid gap-2 mt-2">
@@ -90,57 +85,62 @@ function ProductFilter({ filters, handleFilter, isMobile }) {
             </div>
           </>
         )}
-        <Separator />
       </div>
     );
   }
 
   return (
     <div>
-      {/* Mobile: filter button and panel */}
       {isMobile && (
         <>
-          <button
-            className="w-full px-4 py-2 bg-accent text-primary rounded font-bold border border-gray-200 mb-3"
+          <Button
+            variant="outline"
+            className="w-full mb-3"
             onClick={() => setFilterPanelOpen(true)}
           >
             Filters
-          </button>
+          </Button>
 
           {filterPanelOpen && (
-            <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex items-end">
-              {/* Mobile filter panel */}
+            // This container is now conditionally positioned based on cart visibility.
+            <div className={`fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-30 flex flex-col transition-all duration-300 ${isCartVisible ? 'bottom-16' : 'bottom-0'}`}>
               <div
-                className="bg-white w-full rounded-t-lg shadow-lg p-0 max-h-[85vh] overflow-auto animate-slide-in-up"
+                className="bg-white w-full h-full mt-auto rounded-t-lg shadow-lg overflow-hidden animate-slide-in-up flex flex-col"
                 style={{
                   animation: "slideup 0.3s cubic-bezier(.18,.89,.32,1.28)"
                 }}
               >
-                <div className="flex justify-between items-center p-4 border-b font-bold">
+                <div className="flex justify-between items-center p-4 border-b font-bold sticky top-0 bg-white z-10">
                   <span>Filters</span>
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setFilterPanelOpen(false)}
-                    className="text-gray-600 px-2 py-1 text-xl"
                     aria-label="Close"
                   >
-                    &times;
-                  </button>
+                    <X className="w-5 h-5" />
+                  </Button>
                 </div>
-                <div className="p-4">
+                
+                {/* The scrollable area has fixed padding to clear its own footer. */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
                   {renderFilters()}
-                  <button
-                    className="w-full mt-4 py-2 bg-primary text-white rounded font-semibold"
+                </div>
+
+                {/* The button's container is always sticky to the bottom of its parent. */}
+                <div className="p-4 border-t sticky bottom-0 bg-white z-10">
+                  <Button
+                    className="w-full h-12 text-base"
                     onClick={() => setFilterPanelOpen(false)}
                   >
                     Apply
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
           )}
         </>
       )}
-      {/* Desktop: always show filters */}
       {!isMobile && (
         <div className="bg-background rounded-lg shadow-sm">
           <div className="p-4 border-b">
@@ -150,19 +150,21 @@ function ProductFilter({ filters, handleFilter, isMobile }) {
         </div>
       )}
 
-      {/* Animation keyframes (only needs to be defined once globally in your main CSS file) */}
       <style>{`
         @keyframes slideup {
-          from { transform: translateY(100%);}
-          to { transform: translateY(0);}
-        }
-        .animate-slide-in-up {
-          animation: slideup 0.3s cubic-bezier(.18,.89,.32,1.28);
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
         }
       `}</style>
     </div>
   );
 }
 
+ProductFilter.propTypes = {
+    filters: PropTypes.object.isRequired,
+    handleFilter: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool,
+    isCartVisible: PropTypes.bool, // This new prop controls the button position
+};
+
 export default ProductFilter;
- 

@@ -2,10 +2,12 @@ import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import instaLogo from "@/assets/insta-logo.png";
 import whatsappLogo from "@/assets/whatsapp-logo.png";
+import founderImage from '@/assets/Founder.jpeg';
+import VairaaKaivannam from '@/assets/Video.mov';
 
 const imageSections = [
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1753698846/Kanchipuram.jpg",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754913320/WhatsApp_Image_2025-08-07_at_11.38.01_AM_gg06zs.jpg",
     alt: "Kanchipuram Silk Sarees",
     title: "Kanchipuram Silk Sarees",
     description:
@@ -13,31 +15,31 @@ const imageSections = [
   },
   {
     src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/Soft_silk_sarees_bwtpu7.jpg",
-    alt: "Soft Silk Sarees",
-    title: "Soft Silk Sarees",
+    alt: "Kanchipuram Soft Silk Sarees",
+    title: "Kanchipuram Soft Silk Sarees",
     description:
       "Our soft silk sarees combine elegance and comfort, perfect for both everyday wear and special occasions. With vibrant colors and rich textures, they reflect timeless tradition with a modern twist.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/TERRACOTA_JEWELARY_k7tzib.jpg",
-    alt: "Terracotta Jewelry",
-    title: "Terracotta Jewelry",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540548/ORGANZA_SILK_evitrx.jpg",
+    alt: "Organza Sarees",
+    title: "Organza Sarees",
     description:
-      "Explore handcrafted terracotta jewelry that adds a touch of earthy sophistication to any outfit. Each piece is carefully molded and painted, offering a rustic charm rooted in Indian heritage.",
+      "Organza Sarees are known for their sheer texture and ethereal beauty. With lightweight fabric and delicate embroidery, they add grace and glamour to any celebration.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540548/TUSSAR_SILK_s6kdgu.jpg",
-    alt: "Tussar Silk Sarees",
-    title: "Tussar Silk Sarees",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754911644/cotton_4_rv722s.jpg",
+    alt: "Cotton Sarees",
+    title: "Cotton Sarees",
     description:
-      "Tussar Silk sarees boast rich texture and organic tones, representing a timeless Indian tradition. Their unique sheen and feel make them ideal for festive occasions and elegant events.",
+      "Cotton Sarees are known for their lightweight texture and comfort, often featuring floral or geometric patterns that resonate with everyday elegance and simplicity.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540551/Kalamkari_Dupata_ppmob9.jpg",
-    alt: "Kalamkari Dupattas",
-    title: "Kalamkari Dupattas",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754911355/silkcotton_2_ih0emg.jpg",
+    alt: "Silk Cotton Sarees",
+    title: "Silk Cotton Sarees",
     description:
-      "Hand-painted and block-printed Kalamkari dupattas that tell stories through fabric art. Each design celebrates mythology and nature, blending craftsmanship with storytelling.",
+      "Silk Cotton Sarees combine the lustrous elegance of silk with the breezy comfort of cotton, offering graceful drapes and intricate designs perfect for both festive and casual occasions."
   },
   {
     src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540551/Linen_Sarees_izcsim.jpg",
@@ -47,20 +49,6 @@ const imageSections = [
       "Breathable and elegant, Linen Sarees offer a minimal yet sophisticated look. Perfect for summer outings and casual events, they bring style with comfort and simplicity.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540548/ORGANZA_SILK_evitrx.jpg",
-    alt: "Organza Sarees",
-    title: "Organza Sarees",
-    description:
-      "Organza Sarees are known for their sheer texture and ethereal beauty. With lightweight fabric and delicate embroidery, they add grace and glamour to any celebration.",
-  },
-   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540552/Kalamkari_Sarees_ekxtxu.jpg",
-    alt: "Kalamkari Sarees",
-    title: "Kalamkari Sarees",
-    description:
-      "Kalamkari Sarees feature hand-painted or block-printed motifs inspired by mythology and nature. A canvas of tradition, they blend storytelling and style effortlessly.",
-  },
-  {
     src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540551/Chanderi_Sarees_llpla2.jpg",
     alt: "Chanderi Sarees",
     title: "Chanderi Sarees",
@@ -68,18 +56,47 @@ const imageSections = [
       "Known for their glossy texture and lightweight feel, Chanderi Sarees are woven with silk and cotton. They reflect royalty, often adorned with zari and traditional patterns.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540549/Fancy_silk_sarees_dh6axb.jpg",
-    alt: "Fancy Silk Sarees",
-    title: "Fancy Silk Sarees",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540551/Kalamkari_Dupata_ppmob9.jpg",
+    alt: "Dupattas",
+    title: "Dupattas",
     description:
-      "With vibrant hues and contemporary designs, Fancy Silk Sarees cater to modern tastes. Perfect for parties and gatherings, they balance trendiness with elegance.",
+      "Hand-painted and block-printed dupattas that tell stories through fabric art. Each design celebrates mythology and nature, blending craftsmanship with storytelling.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/Painting_vtks5n.jpg",
-    alt: "Traditional Paintings",
-    title: "Traditional Paintings",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540552/Kalamkari_Sarees_ekxtxu.jpg",
+    alt: "Kalamkari Sarees",
+    title: "Kalamkari Sarees",
     description:
-      "Our collection of traditional paintings showcases rich Indian art forms including Madhubani, Tanjore, and Pattachitra. These pieces celebrate heritage through vibrant colors and detailed brushwork.",
+      "Kalamkari Sarees feature hand-painted or block-printed motifs inspired by mythology and nature. A canvas of tradition, they blend storytelling and style effortlessly.",
+  },
+  {
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754907304/DIVERSE_COLLECTION_2_iwsjg9.jpg",
+    alt: "Diverse Collections",
+    title: "Diverse Collections",
+    description:
+      "Diverse Collection showcases intricate floral motifs and a beautifully detailed woven border, blending heritage-inspired patterns with refined craftsmanship. Its design reflects a perfect harmony of tradition and artistry.",
+  },  
+   
+  {
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754910555/KHADI_2_1_q46ibo.jpg",
+    alt: "Bengal Khadi Sarees",
+    title: "Bengal Khadi Sarees",
+    description:
+      "Bengal Khadi Sarees are known for their fine handspun texture and lightweight comfort, featuring minimalistic patterns that embody elegance and everyday sophistication.",
+  },
+  {
+    src: VairaaKaivannam,
+    alt: "Vairaa Kaivannam (Customized Sarees)",
+    title: "Vairaa Kaivannam (Customized Sarees)",
+    description:
+      "Discover the art of personalization with Vairaa Kaivannam’s customized sarees — where tradition meets individuality. Each saree is thoughtfully tailored and intricately designed to reflect your unique style, while preserving the elegance of Indian craftsmanship. Drape yourself in bespoke beauty rooted in cultural grace.",
+  },
+  {
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/TERRACOTA_JEWELARY_k7tzib.jpg",
+    alt: "Terracotta Jewelry",
+    title: "Terracotta Jewelry",
+    description:
+      "Explore handcrafted terracotta jewelry that adds a touch of earthy sophistication to any outfit. Each piece is carefully molded and painted, offering a rustic charm rooted in Indian heritage.",
   },
 ];
 
@@ -112,6 +129,12 @@ function AboutUs() {
             <p className="text-xl md:text-2xl text-gray-700 font-light leading-relaxed mb-8">
               Coimbatore's premier boutique destination, renowned for exceptional quality, 
               distinctive designs, and curated collections for the modern connoisseur.
+              The company curates collections that celebrate culture, elegance, and authenticity, 
+              with each piece telling a story of craftsmanship, care, and personal touch. 
+              It produces authentic and unique designs by collaborating closely with weavers and 
+              professional designers, ensuring every creation reflects ancestral heritage while 
+              honoring fashion trends. Every design is a reflection of innovation, quality, and 
+              expressive artistry, resulting in work that is both aesthetically pleasing and culturally striking.
             </p>
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-yellow-200">
               <p className="text-lg text-gray-600 leading-relaxed">
@@ -142,7 +165,7 @@ function AboutUs() {
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-yellow-600/20 rounded-3xl"></div>
                 <img
-                  src="https://via.placeholder.com/600x700/f59e0b/ffffff?text=Founder+Photo"
+                  src={founderImage}
                   alt="Founder of Pradhikshaa Silks"
                   className="w-full h-[600px] object-cover rounded-3xl shadow-2xl border-4 border-white"
                 />
@@ -235,11 +258,22 @@ function AboutUs() {
                 <div className="flex-1 w-full max-w-lg">
                   <div className="relative group">
                     <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-3xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+                    {section.src === VairaaKaivannam ? (
+                        <video
+                          src={section.src}
+                          controls
+                          autoPlay
+                          loop
+                          muted
+                          className="relative w-full h-[500px] md:h-[600px] object-cover rounded-2xl shadow-2xl border-2 border-yellow-200 transition-transform duration-300 group-hover:scale-105"
+                        />
+                      ) : (
                     <img
                       src={section.src}
                       alt={section.alt}
-                      className="relative w-full h-80 object-cover rounded-2xl shadow-2xl border-2 border-yellow-200 transition-transform duration-300 group-hover:scale-105"
+                      className="relative w-full h-[500px] md:h-[600px] object-cover rounded-2xl shadow-2xl border-2 border-yellow-200 transition-transform duration-300 group-hover:scale-105"
                     />
+                    )}
                   </div>
                 </div>
 

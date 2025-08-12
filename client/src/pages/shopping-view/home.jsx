@@ -33,6 +33,8 @@ import { useNavigate } from "react-router-dom";
 import UserCartWrapper from "@/components/shopping-view/cart-wrapper";
 import ReviewCarousel from "@/components/common/ReviewCarousel";
 import { formatPriceWithTax } from "@/lib/utils";
+import { API_BASE_URL } from "@/config";
+import VairaaKaivannam from '@/assets/Video.mov';
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -54,7 +56,7 @@ const brandsWithIcon = [
 // About Us image sections (copied from about-us.jsx)
 const aboutUsImageSections = [
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1753698846/Kanchipuram.jpg",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754913320/WhatsApp_Image_2025-08-07_at_11.38.01_AM_gg06zs.jpg",
     alt: "Kanchipuram Silk Sarees",
     title: "Kanchipuram Silk Sarees",
     description:
@@ -62,24 +64,31 @@ const aboutUsImageSections = [
   },
   {
     src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/Soft_silk_sarees_bwtpu7.jpg",
-    alt: "Soft Silk Sarees",
-    title: "Soft Silk Sarees",
+    alt: "Kanchipuram Soft Silk Sarees",
+    title: "Kanchipuram Soft Silk Sarees",
     description:
       "Our soft silk sarees combine elegance and comfort, perfect for both everyday wear and special occasions. With vibrant colors and rich textures, they reflect timeless tradition with a modern twist.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540548/TUSSAR_SILK_s6kdgu.jpg",
-    alt: "Tussar Silk Sarees",
-    title: "Tussar Silk Sarees",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540548/ORGANZA_SILK_evitrx.jpg",
+    alt: "Organza Sarees",
+    title: "Organza Sarees",
     description:
-      "Tussar Silk sarees boast rich texture and organic tones, representing a timeless Indian tradition. Their unique sheen and feel make them ideal for festive occasions and elegant events.",
+      "Organza Sarees are known for their sheer texture and ethereal beauty. With lightweight fabric and delicate embroidery, they add grace and glamour to any celebration.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540551/Kalamkari_Dupata_ppmob9.jpg",
-    alt: "Kalamkari Dupattas",
-    title: "Kalamkari Dupattas",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754911644/cotton_4_rv722s.jpg",
+    alt: "Cotton Sarees",
+    title: "Cotton Sarees",
     description:
-      "Hand-painted and block-printed Kalamkari dupattas that tell stories through fabric art. Each design celebrates mythology and nature, blending craftsmanship with storytelling.",
+      "Cotton Sarees are known for their lightweight texture and comfort, often featuring floral or geometric patterns that resonate with everyday elegance and simplicity.",
+  },
+  {
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754911355/silkcotton_2_ih0emg.jpg",
+    alt: "Silk Cotton Sarees",
+    title: "Silk Cotton Sarees",
+    description:
+      "Silk Cotton Sarees combine the lustrous elegance of silk with the breezy comfort of cotton, offering graceful drapes and intricate designs perfect for both festive and casual occasions."
   },
   {
     src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540551/Linen_Sarees_izcsim.jpg",
@@ -89,20 +98,6 @@ const aboutUsImageSections = [
       "Breathable and elegant, Linen Sarees offer a minimal yet sophisticated look. Perfect for summer outings and casual events, they bring style with comfort and simplicity.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540548/ORGANZA_SILK_evitrx.jpg",
-    alt: "Organza Sarees",
-    title: "Organza Sarees",
-    description:
-      "Organza Sarees are known for their sheer texture and ethereal beauty. With lightweight fabric and delicate embroidery, they add grace and glamour to any celebration.",
-  },
-   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540552/Kalamkari_Sarees_ekxtxu.jpg",
-    alt: "Kalamkari Sarees",
-    title: "Kalamkari Sarees",
-    description:
-      "Kalamkari Sarees feature hand-painted or block-printed motifs inspired by mythology and nature. A canvas of tradition, they blend storytelling and style effortlessly.",
-  },
-  {
     src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540551/Chanderi_Sarees_llpla2.jpg",
     alt: "Chanderi Sarees",
     title: "Chanderi Sarees",
@@ -110,11 +105,40 @@ const aboutUsImageSections = [
       "Known for their glossy texture and lightweight feel, Chanderi Sarees are woven with silk and cotton. They reflect royalty, often adorned with zari and traditional patterns.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540549/Fancy_silk_sarees_dh6axb.jpg",
-    alt: "Fancy Silk Sarees",
-    title: "Fancy Silk Sarees",
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540551/Kalamkari_Dupata_ppmob9.jpg",
+    alt: "Dupattas",
+    title: "Dupattas",
     description:
-      "With vibrant hues and contemporary designs, Fancy Silk Sarees cater to modern tastes. Perfect for parties and gatherings, they balance trendiness with elegance.",
+      "Hand-painted and block-printed dupattas that tell stories through fabric art. Each design celebrates mythology and nature, blending craftsmanship with storytelling.",
+  },
+  {
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540552/Kalamkari_Sarees_ekxtxu.jpg",
+    alt: "Kalamkari Sarees",
+    title: "Kalamkari Sarees",
+    description:
+      "Kalamkari Sarees feature hand-painted or block-printed motifs inspired by mythology and nature. A canvas of tradition, they blend storytelling and style effortlessly.",
+  },
+  {
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754907304/DIVERSE_COLLECTION_2_iwsjg9.jpg",
+    alt: "Diverse Collections",
+    title: "Diverse Collections",
+    description:
+      "Diverse Collection showcases intricate floral motifs and a beautifully detailed woven border, blending heritage-inspired patterns with refined craftsmanship. Its design reflects a perfect harmony of tradition and artistry.",
+  },  
+   
+  {
+    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754910555/KHADI_2_1_q46ibo.jpg",
+    alt: "Bengal Khadi Sarees",
+    title: "Bengal Khadi Sarees",
+    description:
+      "Bengal Khadi Sarees are known for their fine handspun texture and lightweight comfort, featuring minimalistic patterns that embody elegance and everyday sophistication.",
+  },
+  {
+    src: VairaaKaivannam,
+    alt: "Vairaa Kaivannam (Customized Sarees)",
+    title: "Vairaa Kaivannam (Customized Sarees)",
+    description:
+      "Discover the art of personalization with Vairaa Kaivannam’s customized sarees — where tradition meets individuality. Each saree is thoughtfully tailored and intricately designed to reflect your unique style, while preserving the elegance of Indian craftsmanship. Drape yourself in bespoke beauty rooted in cultural grace.",
   },
   {
     src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1749540547/TERRACOTA_JEWELARY_k7tzib.jpg",
@@ -142,6 +166,7 @@ function ShoppingHome() {
   const navigate = useNavigate();
 
   const [isMobile, setIsMobile] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   function handleGetProductDetails(getCurrentProductId) {
     dispatch(fetchProductDetails(getCurrentProductId));
@@ -236,6 +261,16 @@ function ShoppingHome() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Fetch categories from backend
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/common/categories`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCategories(Array.isArray(data.categories) ? data.categories : []);
+      })
+      .catch(() => setCategories([]));
+  }, []);
+
   // Filter banners to only those with a valid image for the current view
   const filteredFeatureImages = featureImageList
     ? featureImageList.filter((slide) =>
@@ -322,44 +357,82 @@ function ShoppingHome() {
       </div>
 
       {/* About Us Image Section - Side by side, alternating, responsive */}
-      <section className="py-12 bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-extrabold text-center mb-8 text-primary drop-shadow-lg tracking-tight">
-            Our Collections
-          </h2>
-          <div className="flex flex-col gap-12">
+      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight">
+              Our Collections
+            </h2>
+            <div className="w-24 h-1 bg-primary mx-auto rounded-full mb-6"></div>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Discover our carefully curated selection of traditional and contemporary pieces, 
+              each telling a unique story of craftsmanship and elegance.
+            </p>
+          </div>
+
+          {/* Collections Grid */}
+          <div className="space-y-16">
             {aboutUsImageSections.map((section, idx) => {
               const isEven = idx % 2 === 0;
               // Replace spaces with plus for subcategory filter, do NOT add a plus at the end
               const subcategoryParam = section.title.replace(/\s+/g, '+');
+              const handleCollectionClick = () => {
+                navigate(`/shop/listing?category=${subcategoryParam}`);
+              };
+              
               return (
                 <div
                   key={idx}
-                  onClick={() => navigate(`/shop/listing?subcategory=${subcategoryParam}`)}
-                  className={`group cursor-pointer flex flex-col md:flex-row items-center md:items-stretch rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-100 hover:border-primary/40 overflow-hidden relative bg-white ${!isEven ? 'md:flex-row-reverse' : ''}`}
+                  onClick={handleCollectionClick}
+                  className={`group cursor-pointer flex flex-col lg:flex-row items-center gap-8 lg:gap-12 ${
+                    !isEven ? 'lg:flex-row-reverse' : ''
+                  }`}
                 >
-                  <div className="md:w-1/2 w-full h-56 md:h-80 relative overflow-hidden flex-shrink-0">
-                    <img
-                      src={section.src}
-                      alt={section.alt}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-70 group-hover:opacity-60 transition-opacity duration-300" />
+                  {/* Image Container */}
+                  <div className="flex-1 w-full max-w-2xl">
+                    <div className="relative group overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300 z-10"></div>
+                      {section.src === VairaaKaivannam ? (
+                        <video
+                          src={section.src}
+                          controls
+                          autoPlay
+                          loop
+                          muted
+                          className="w-full h-[400px] md:h-[500px] object-cover rounded-2xl"
+                        />
+                      ) : (
+                        <img
+                          src={section.src}
+                          alt={section.alt}
+                          className="w-full h-[400px] md:h-[500px] object-cover transform group-hover:scale-110 transition-transform duration-700"
+                        />
+                      )}
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-800 text-sm font-semibold px-4 py-2 rounded-full z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        Explore Collection
+                      </div>
+                    </div>
                   </div>
-                  <div className="md:w-1/2 w-full flex flex-col justify-center p-6 md:p-10 text-left">
-                    <h3 className="text-2xl font-bold mb-3 text-primary group-hover:text-secondary transition-colors duration-200">
-                      {section.title}
-                    </h3>
-                    <p className="text-gray-600 text-base mb-4">
+
+                  {/* Content */}
+                  <div className="flex-1 space-y-6 text-center lg:text-left">
+                    <div className="space-y-4">
+                      <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 tracking-wide group-hover:text-primary transition-colors duration-300">
+                        {section.title}
+                      </h3>
+                      <div className="w-16 h-1 bg-primary rounded-full mx-auto lg:mx-0"></div>
+                    </div>
+                    <p className="text-lg text-gray-600 leading-relaxed max-w-lg mx-auto lg:mx-0">
                       {section.description}
                     </p>
-                    <span className="inline-block text-sm font-semibold text-primary group-hover:underline group-hover:text-secondary transition-colors duration-200">
-                      View Products
-                    </span>
+                    <div className="inline-flex items-center gap-2 text-primary font-semibold text-lg group-hover:gap-3 transition-all duration-300">
+                      <span>View Products</span>
+                      <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </div>
                   </div>
-                  <span className="absolute top-3 right-3 bg-primary text-white text-xs px-3 py-1 rounded-full shadow group-hover:bg-secondary transition-colors duration-200">
-                    Explore
-                  </span>
                 </div>
               );
             })}

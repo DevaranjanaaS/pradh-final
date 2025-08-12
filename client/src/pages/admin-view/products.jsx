@@ -95,7 +95,7 @@ function AdminProducts() {
 
   function isFormValid() {
     return Object.keys(formData)
-      .filter((currentKey) => currentKey !== "averageReview" && currentKey !== "subcategory")
+      .filter((currentKey) => currentKey !== "averageReview" && currentKey !== "subcategory" && currentKey !== "youtubeLink")
       .map((key) => formData[key] !== "")
       .every((item) => item);
   }

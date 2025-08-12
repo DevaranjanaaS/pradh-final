@@ -120,7 +120,7 @@ function ShoppingCheckout() {
             contact: currentSelectedAddress?.phone,
           },
           theme: {
-            color: "#F37254",
+            color: "#a37c3c",
           },
           method: {
             upi: true,

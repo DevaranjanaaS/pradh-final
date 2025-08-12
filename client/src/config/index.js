@@ -78,6 +78,7 @@ export const addProductFormElements = [
     componentType: "input",
     type: "text",
     placeholder: "Enter YouTube video link (optional)",
+    required: false,
   },
  
   {

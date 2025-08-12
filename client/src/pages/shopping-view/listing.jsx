@@ -23,20 +23,26 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { formatPriceWithTax } from "@/lib/utils";
 import debounce from "lodash.debounce";
 
+
 function createSearchParamsHelper(filterParams) {
   const queryParams = [];
+
   for (const [key, value] of Object.entries(filterParams)) {
     if (Array.isArray(value) && value.length > 0) {
       const paramValue = value.join(",");
       queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
     }
   }
+
   return queryParams.join("&");
 }
 
+
 function ShoppingListing() {
   const dispatch = useDispatch();
-  const { productList, productDetails } = useSelector((state) => state.shopProducts);
+  const { productList, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
   const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
   const [filters, setFilters] = useState({});
@@ -52,25 +58,31 @@ function ShoppingListing() {
 
   useEffect(() => {
     setSort("price-lowtohigh");
+
     const categorySearchParam = searchParams.get("category");
     const subcategorySearchParam = searchParams.get("subcategory");
     const subcategory = subcategorySearchParam
       ? subcategorySearchParam.replace(/\+/g, " ").trim()
       : null;
+
     const categoryArray = categorySearchParam
       ? decodeURIComponent(categorySearchParam)
           .split(",")
           .map((cat) => cat.trim())
       : [];
+
     let initialFilters = {};
+
     if (categoryArray.length > 0) {
       initialFilters = { category: categoryArray };
     } else if (subcategory) {
       initialFilters = { subcategory: [subcategory] };
     } else {
-      const storedFilters = JSON.parse(sessionStorage.getItem("filters")) || {};
+      const storedFilters =
+        JSON.parse(sessionStorage.getItem("filters")) || {};
       initialFilters = storedFilters;
     }
+
     setFilters(initialFilters);
     sessionStorage.setItem("filters", JSON.stringify(initialFilters));
   }, [searchParams]);
@@ -82,8 +94,10 @@ function ShoppingListing() {
   ).current;
 
   useEffect(() => {
-    const filtersChanged = JSON.stringify(prevFiltersRef.current) !== JSON.stringify(filters);
+    const filtersChanged =
+      JSON.stringify(prevFiltersRef.current) !== JSON.stringify(filters);
     const sortChanged = prevSortRef.current !== sort;
+
     if (filters && sort && (filtersChanged || sortChanged)) {
       debouncedFetchProducts(filters, sort);
       prevFiltersRef.current = filters;
@@ -105,23 +119,32 @@ function ShoppingListing() {
 
   function handleFilter(getSectionId, getCurrentOption, newFilters = null) {
     let cpyFilters = newFilters || { ...filters };
+
     if (newFilters) {
       setFilters(cpyFilters);
       sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
       updateURLFromFilters(cpyFilters);
       return;
     }
+
     const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
+
     if (indexOfCurrentSection === -1) {
-      cpyFilters = { ...cpyFilters, [getSectionId]: [getCurrentOption] };
+      cpyFilters = {
+        ...cpyFilters,
+        [getSectionId]: [getCurrentOption],
+      };
     } else {
       const indexOfCurrentOption = cpyFilters[getSectionId].indexOf(getCurrentOption);
+
       if (indexOfCurrentOption === -1) cpyFilters[getSectionId].push(getCurrentOption);
       else cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
+
       if (cpyFilters[getSectionId].length === 0) {
         delete cpyFilters[getSectionId];
       }
     }
+
     setFilters(cpyFilters);
     sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
     updateURLFromFilters(cpyFilters);
@@ -145,6 +168,7 @@ function ShoppingListing() {
       navigate("/auth/login");
       return;
     }
+
     let getCartItems = cartItems.items || [];
     if (getCartItems.length) {
       const indexOfCurrentItem = getCartItems.findIndex(
@@ -161,6 +185,7 @@ function ShoppingListing() {
         }
       }
     }
+
     dispatch(
       addToCart({
         userId: user?.id,
@@ -191,6 +216,7 @@ function ShoppingListing() {
   }, []);
 
   const cartArray = cartItems?.items || [];
+  const showMobileCartBar = isMobile && cartArray.length > 0;
 
   function MobileCartBar({ cartItems, onCheckout }) {
     const subtotal = cartItems.reduce(
@@ -227,8 +253,14 @@ function ShoppingListing() {
   }
 
   return (
-    <div className="mt-16 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
-      <ProductFilter filters={filters} handleFilter={handleFilter} isMobile={isMobile} />
+    <div className={`mt-16 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6 ${showMobileCartBar ? 'pb-24' : ''}`}>
+      {/* The ProductFilter component now receives the isCartVisible prop */}
+      <ProductFilter 
+        filters={filters} 
+        handleFilter={handleFilter} 
+        isMobile={isMobile} 
+        isCartVisible={showMobileCartBar}
+      />
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-extrabold">All Products</h2>
@@ -280,7 +312,7 @@ function ShoppingListing() {
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
       />
-      {isMobile && cartArray.length > 0 && (
+      {showMobileCartBar && (
         <div className="fixed bottom-0 left-0 w-full z-50 bg-white border-t border-gray-200 shadow-lg">
           <div className="max-w-lg mx-auto">
             <MobileCartBar

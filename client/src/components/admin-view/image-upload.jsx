@@ -1,11 +1,18 @@
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
 import { API_BASE_URL } from "../../config";
+
+// Configure axios for larger file uploads
+const uploadAxios = axios.create({
+  maxContentLength: 8 * 1024 * 1024, // 8MB
+  maxBodyLength: 8 * 1024 * 1024, // 8MB
+  timeout: 180000, // 3 minutes timeout
+});
 
 function ProductImageUpload({
   imageFiles,
@@ -20,6 +27,7 @@ function ProductImageUpload({
   inputId = "image-upload", // NEW PROP
 }) {
   const inputRef = useRef(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   function handleImageFileChange(event) {
     let selectedFiles = Array.from(event.target.files || []);
@@ -49,11 +57,19 @@ function ProductImageUpload({
 
   async function uploadImageToCloudinary() {
     setImageLoadingState(true);
+    setUploadProgress(0);
     const data = new FormData();
     imageFiles.forEach((file) => data.append("my_file", file));
-    const response = await axios.post(
+    const response = await uploadAxios.post(
       `${API_BASE_URL}/admin/products/upload-image`,
-      data
+      data,
+      {
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            setUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+          }
+        },
+      }
     );
     if (response?.data?.success) {
       const urls = (response.data.results || [])
@@ -61,6 +77,7 @@ function ProductImageUpload({
         .filter(Boolean);
       setUploadedImageUrls(urls);
       setImageLoadingState(false);
+      setUploadProgress(0);
     }
   }
 
@@ -97,7 +114,16 @@ function ProductImageUpload({
             <span>Drag & drop or click to upload image</span>
           </Label>
         ) : imageLoadingState ? (
-          <Skeleton className="h-10 bg-gray-100" />
+          <>
+            <Skeleton className="h-10 bg-gray-100" />
+            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+              <div
+                className="bg-primary h-2 rounded-full transition-all duration-200"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
+            </div>
+            <div className="text-xs text-gray-500 mt-1">Uploading... {uploadProgress}%</div>
+          </>
         ) : (
           <div className="flex flex-col gap-2">
             {imageFiles.map((file, idx) => (

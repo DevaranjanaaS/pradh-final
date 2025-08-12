@@ -12,11 +12,24 @@ const storage = new multer.memoryStorage();
 async function imageUploadUtil(file) {
   const result = await cloudinary.uploader.upload(file, {
     resource_type: "auto",
+    chunk_size: 8388608, // 8MB in bytes
+    eager: [
+      { width: 1000, height: 1000, crop: "limit" },
+      { width: 800, height: 800, crop: "limit" }
+    ],
+    eager_async: true,
+    //eager_notification_url: "https://your-domain.com/webhook"
   });
 
   return result;
 }
 
-const upload = multer({ storage });
+// Configure multer to accept larger files (8MB)
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 8 * 1024 * 1024, // 8MB in bytes
+  }
+});
 
 module.exports = { upload, imageUploadUtil };

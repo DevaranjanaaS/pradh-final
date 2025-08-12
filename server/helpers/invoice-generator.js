@@ -238,8 +238,8 @@ class InvoiceGenerator {
          .fillColor('#374151')
          .text(item.title, 50, currentY, { width: 240 })
          .text(item.quantity.toString(), 300, currentY)
-         .text(`₹${item.price}`, 400, currentY)
-         .text(`₹${(item.price * item.quantity).toFixed(2)}`, 500, currentY);
+         .text(`Rs${item.price}`, 400, currentY)
+         .text(`Rs${(item.price * item.quantity).toFixed(2)}`, 500, currentY);
       
       currentY += 20;
     });
@@ -262,17 +262,17 @@ class InvoiceGenerator {
     
     doc.text('Subtotal:', 400, startY)
        .font('Helvetica-Bold')
-       .text(`₹${orderData.subtotal.toFixed(2)}`, 500, startY);
+       .text(`Rs${orderData.subtotal.toFixed(2)}`, 500, startY);
     
     doc.font('Helvetica')
        .text('Tax:', 400, startY + 15)
        .font('Helvetica-Bold')
-       .text(`₹${orderData.taxAmount.toFixed(2)}`, 500, startY + 15);
+       .text(`Rs${orderData.taxAmount.toFixed(2)}`, 500, startY + 15);
     
     doc.font('Helvetica')
        .text('Shipping:', 400, startY + 30)
        .font('Helvetica-Bold')
-       .text(`₹${orderData.shippingCharges.toFixed(2)}`, 500, startY + 30);
+       .text(`Rs${orderData.shippingCharges.toFixed(2)}`, 500, startY + 30);
     
     // Total line
     doc.moveTo(400, startY + 45)
@@ -284,7 +284,7 @@ class InvoiceGenerator {
        .font('Helvetica-Bold')
        .fillColor('#1f2937')
        .text('Total:', 400, startY + 55)
-       .text(`₹${orderData.totalAmount.toFixed(2)}`, 500, startY + 55);
+       .text(`Rs${orderData.totalAmount.toFixed(2)}`, 500, startY + 55);
   }
 
   addFooter(orderData) {
