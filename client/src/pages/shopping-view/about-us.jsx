@@ -7,7 +7,7 @@ import VairaaKaivannam from '@/assets/Video.mov';
 
 const imageSections = [
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754913320/WhatsApp_Image_2025-08-07_at_11.38.01_AM_gg06zs.jpg",
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1755085618/Untitled_fcnyxy_axujdy.jpg",
     alt: "Kanchipuram Silk Sarees",
     title: "Kanchipuram Silk Sarees",
     description:
@@ -28,14 +28,14 @@ const imageSections = [
       "Organza Sarees are known for their sheer texture and ethereal beauty. With lightweight fabric and delicate embroidery, they add grace and glamour to any celebration.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754911644/cotton_4_rv722s.jpg",
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1755082823/IMG_8692_ujigrk.jpg",
     alt: "Cotton Sarees",
     title: "Cotton Sarees",
     description:
       "Cotton Sarees are known for their lightweight texture and comfort, often featuring floral or geometric patterns that resonate with everyday elegance and simplicity.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754911355/silkcotton_2_ih0emg.jpg",
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1755082934/9ea3a6b2-8fd4-4ae5-96ef-50bd6e61694c_ouhxmf.jpg",
     alt: "Silk Cotton Sarees",
     title: "Silk Cotton Sarees",
     description:
@@ -70,7 +70,7 @@ const imageSections = [
       "Kalamkari Sarees feature hand-painted or block-printed motifs inspired by mythology and nature. A canvas of tradition, they blend storytelling and style effortlessly.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754907304/DIVERSE_COLLECTION_2_iwsjg9.jpg",
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1755083535/IMG_9929_qkocoq.jpg",
     alt: "Diverse Collections",
     title: "Diverse Collections",
     description:

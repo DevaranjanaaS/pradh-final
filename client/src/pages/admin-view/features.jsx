@@ -1,14 +1,5 @@
 import { useState, useEffect } from 'react';
-import { 
-  ChevronDown, 
-  ChevronRight, 
-  Plus, 
-  Edit, 
-  Trash2,
-  Check,
-  X
-} from 'lucide-react';
-import ProductImageUpload from "@/components/admin-view/image-upload";
+import { ChevronDown, ChevronRight, Plus, Edit, Trash2, Check, X } from 'lucide-react';
 import { API_BASE_URL } from "@/config";
 
 function AdminFeatures() {
@@ -20,12 +11,6 @@ function AdminFeatures() {
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [isAddingSubcategory, setIsAddingSubcategory] = useState(false);
   const [selectedCategoryForSubcategory, setSelectedCategoryForSubcategory] = useState('');
-  const [categoryImageFiles, setCategoryImageFiles] = useState([]);
-  const [categoryImageUrls, setCategoryImageUrls] = useState([]);
-  const [categoryImageLoading, setCategoryImageLoading] = useState(false);
-  const [subcategoryImageFiles, setSubcategoryImageFiles] = useState([]);
-  const [subcategoryImageUrls, setSubcategoryImageUrls] = useState([]);
-  const [subcategoryImageLoading, setSubcategoryImageLoading] = useState(false);
 
   // Fetch data from backend
   useEffect(() => {
@@ -90,31 +75,27 @@ function AdminFeatures() {
 
   // Handle add new category
   const handleAddCategory = async () => {
-    if (!newItemName.trim() || !categoryImageUrls.length) return;
+    if (!newItemName.trim()) return;
     await fetch(`${API_BASE_URL}/common/categories`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newItemName, image: categoryImageUrls[0] }),
+      body: JSON.stringify({ name: newItemName }),
     });
     setNewItemName('');
     setIsAddingCategory(false);
-    setCategoryImageFiles([]);
-    setCategoryImageUrls([]);
     refreshCategoryData();
   };
 
   // Handle add new subcategory
   const handleAddSubcategory = async () => {
-    if (!newItemName.trim() || !selectedCategoryForSubcategory || !subcategoryImageUrls.length) return;
+    if (!newItemName.trim() || !selectedCategoryForSubcategory) return;
     await fetch(`${API_BASE_URL}/common/subcategories`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newItemName, categoryId: selectedCategoryForSubcategory, image: subcategoryImageUrls[0] }),
+      body: JSON.stringify({ name: newItemName, categoryId: selectedCategoryForSubcategory }),
     });
     setNewItemName('');
     setIsAddingSubcategory(false);
-    setSubcategoryImageFiles([]);
-    setSubcategoryImageUrls([]);
     refreshCategoryData();
   };
 
@@ -148,19 +129,9 @@ function AdminFeatures() {
                 placeholder="Enter new category name"
                 className="flex-1 p-2 border rounded"
               />
-              <ProductImageUpload
-                imageFiles={categoryImageFiles}
-                setImageFiles={setCategoryImageFiles}
-                uploadedImageUrls={categoryImageUrls}
-                setUploadedImageUrls={setCategoryImageUrls}
-                setImageLoadingState={setCategoryImageLoading}
-                imageLoadingState={categoryImageLoading}
-                isCustomStyling={true}
-              />
               <button
                 onClick={handleAddCategory}
                 className="p-2 text-green-500 hover:text-green-700"
-                disabled={categoryImageLoading || !categoryImageUrls.length}
               >
                 <Check size={20} />
               </button>
@@ -264,19 +235,9 @@ function AdminFeatures() {
                           placeholder="Enter new subcategory name"
                           className="flex-1 p-2 border rounded"
                         />
-                        <ProductImageUpload
-                          imageFiles={subcategoryImageFiles}
-                          setImageFiles={setSubcategoryImageFiles}
-                          uploadedImageUrls={subcategoryImageUrls}
-                          setUploadedImageUrls={setSubcategoryImageUrls}
-                          setImageLoadingState={setSubcategoryImageLoading}
-                          imageLoadingState={subcategoryImageLoading}
-                          isCustomStyling={true}
-                        />
                         <button
                           onClick={handleAddSubcategory}
                           className="p-2 text-green-500 hover:text-green-700"
-                          disabled={subcategoryImageLoading || !subcategoryImageUrls.length}
                         >
                           <Check size={16} />
                         </button>

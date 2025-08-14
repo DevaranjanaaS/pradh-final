@@ -129,13 +129,13 @@ import { X, ShoppingCart, Truck, Shield, RotateCcw } from "lucide-react";
         >
           <DialogTitle className="sr-only">Product Details</DialogTitle>
           <DialogDescription className="sr-only">View detailed information about this product</DialogDescription>
-          {/* Close Button */}
-          {/*<button
+          {/* Close Button 
+          <button
             onClick={handleDialogClose}
-            className="absolute right-4 z-50 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 top-4 sm:top-4 mt-8 sm:mt-0"
+            className="absolute right-6 top-6 z-50 w-8 h-8 bg-black hover:bg-gray-900 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105"
             aria-label="Close product details"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 text-white" />
           </button>*/}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 min-h-full">

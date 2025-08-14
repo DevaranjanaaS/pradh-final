@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+const { sendOrderNotification } = require("../../helpers/email"); // <-- Add this line
 const router = express.Router();
 
 router.post("/razorpay", express.json({ type: "*/*" }), async (req, res) => {
@@ -63,6 +64,14 @@ router.post("/razorpay", express.json({ type: "*/*" }), async (req, res) => {
       // Delete the user's cart by id
       if (updatedOrder.cartId) {
         await Cart.findByIdAndDelete(updatedOrder.cartId);
+      }
+
+      // Send email notification
+      try {
+        await sendOrderNotification({ order: updatedOrder });
+        console.log("Order notification email sent.");
+      } catch (emailErr) {
+        console.error("Failed to send order notification email:", emailErr);
       }
 
       console.log("Order updated, cart deleted, and inventory adjusted for order ID:", updatedOrder._id);

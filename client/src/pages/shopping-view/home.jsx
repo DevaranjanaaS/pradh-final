@@ -56,7 +56,7 @@ const brandsWithIcon = [
 // About Us image sections (copied from about-us.jsx)
 const aboutUsImageSections = [
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754913320/WhatsApp_Image_2025-08-07_at_11.38.01_AM_gg06zs.jpg",
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1755085618/Untitled_fcnyxy_axujdy.jpg",
     alt: "Kanchipuram Silk Sarees",
     title: "Kanchipuram Silk Sarees",
     description:
@@ -77,14 +77,14 @@ const aboutUsImageSections = [
       "Organza Sarees are known for their sheer texture and ethereal beauty. With lightweight fabric and delicate embroidery, they add grace and glamour to any celebration.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754911644/cotton_4_rv722s.jpg",
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1755082823/IMG_8692_ujigrk.jpg",
     alt: "Cotton Sarees",
     title: "Cotton Sarees",
     description:
       "Cotton Sarees are known for their lightweight texture and comfort, often featuring floral or geometric patterns that resonate with everyday elegance and simplicity.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754911355/silkcotton_2_ih0emg.jpg",
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1755082934/9ea3a6b2-8fd4-4ae5-96ef-50bd6e61694c_ouhxmf.jpg",
     alt: "Silk Cotton Sarees",
     title: "Silk Cotton Sarees",
     description:
@@ -119,7 +119,7 @@ const aboutUsImageSections = [
       "Kalamkari Sarees feature hand-painted or block-printed motifs inspired by mythology and nature. A canvas of tradition, they blend storytelling and style effortlessly.",
   },
   {
-    src: "https://res.cloudinary.com/ddvxciphm/image/upload/v1754907304/DIVERSE_COLLECTION_2_iwsjg9.jpg",
+    src: "https://res.cloudinary.com/dphxdgu4n/image/upload/v1755083535/IMG_9929_qkocoq.jpg",
     alt: "Diverse Collections",
     title: "Diverse Collections",
     description:
@@ -318,6 +318,9 @@ function ShoppingHome() {
   let combined = [...outOfStock, ...inStock];
   let last8 = combined.slice(-8).reverse();
 
+  // Determine number of columns for feature products section
+  const gridCols = isMobile ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+
   return (
     <div className="flex flex-col min-h-screen mt-16">
       <div className="relative w-full h-[600px] overflow-hidden">
@@ -445,7 +448,7 @@ function ShoppingHome() {
           <h2 className="text-3xl font-bold text-center mb-8">
             Feature Products
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 p-2 sm:p-4">
+          <div className={`grid ${gridCols} gap-2 sm:gap-4 p-2 sm:p-4`}>
             {last8.length > 0
               ? last8.map((productItem) => (
                   <ShoppingProductTile

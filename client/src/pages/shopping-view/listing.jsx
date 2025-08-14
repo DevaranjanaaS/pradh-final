@@ -294,7 +294,7 @@ function ShoppingListing() {
             </DropdownMenu>
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 p-2 sm:p-4">
+        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'} gap-2 sm:gap-4 p-2 sm:p-4`}>
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <ShoppingProductTile

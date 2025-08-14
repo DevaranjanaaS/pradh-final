@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { createNewOrder, captureRazorpayPayment } from "@/store/shop/order-slice";
+import { createNewOrder, captureRazorpayPayment, capturePayment } from "@/store/shop/order-slice";
 import { Navigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { 
